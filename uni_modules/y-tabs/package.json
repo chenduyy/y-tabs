@@ -1,0 +1,86 @@
+{
+	"id": "y-tabs",
+	"displayName": "y-tabs选项卡、标签页组件(写法靠近vant的tabs组件)",
+	"version": "2.2.7",
+	"description": "tab标签页，支持标签栏滚动、滑动切换、滚动吸顶、滚动导航、侧边栏导航、标题超出隐藏，右上角角标等",
+	"keywords": [
+        "选项卡",
+        "标签页",
+        "tabs",
+        "滚动导航",
+        "侧边栏导航"
+    ],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^3.5.5"
+	},
+    "dcloudext": {
+        "type": "component-vue",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "无",
+			"data": "插件不采集任何数据",
+			"permissions": "无"
+		},
+		"npmurl": ""
+	},
+	"uni_modules": {
+		"dependencies": [],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "y",
+                "aliyun": "y",
+                "alipay": "n"
+			},
+			"client": {
+				"Vue": {
+					"vue2": "y",
+					"vue3": "y"
+				},
+				"App": {
+					"app-vue": "y",
+					"app-nvue": "n"
+				},
+				"H5-mobile": {
+					"Safari": "y",
+					"Android Browser": "y",
+					"微信浏览器(Android)": "y",
+					"QQ浏览器(Android)": "y"
+				},
+				"H5-pc": {
+					"Chrome": "y",
+					"IE": "n",
+					"Edge": "y",
+					"Firefox": "y",
+					"Safari": "y"
+				},
+				"小程序": {
+					"微信": "y",
+					"阿里": "y",
+					"百度": "y",
+					"字节跳动": "y",
+					"QQ": "y",
+					"钉钉": "y",
+					"快手": "y",
+					"飞书": "y",
+					"京东": "y"
+				},
+				"快应用": {
+					"华为": "u",
+					"联盟": "u"
+				}
+			}
+		}
+	}
+}

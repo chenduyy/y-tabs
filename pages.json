@@ -1,0 +1,325 @@
+{
+	"pages": [{
+			"path": "pages/tabBar/home",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom",
+				"mp-alipay": {
+					//在支付宝小程序中如果自定义导航栏不生效,需要加上这两行代码
+					"transparentTitle": "always",
+					"titlePenetrate": "YES"
+				}
+			}
+		},
+		{
+			"path": "pages/tabBar/basic",
+			"style": {
+				"navigationBarTitleText": "基础"
+			}
+		},
+		{
+			"path": "pages/tabBar/example",
+			"style": {
+				"navigationBarTitleText": "案例"
+			}
+		},
+		{
+			"path": "pages/tabBar/my",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		}
+	],
+	"subPackages": [{
+			"root": "pagesBasic",
+			"pages": [{
+					"path": "params",
+					"style": {
+						"navigationBarTitleText": "基础用法",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "style-setting",
+					"style": {
+						"navigationBarTitleText": "设置标签栏相关颜色、样式",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "slider-setting",
+					"style": {
+						"navigationBarTitleText": "滑块设置及自定义滑块",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sliding-switch",
+					"style": {
+						"navigationBarTitleText": "滑动切换",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sliding-title-style-change",
+					"style": {
+						"navigationBarTitleText": "滑动切换时改变标题样式",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sticky",
+					"style": {
+						"navigationBarTitleText": "滚动吸顶",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "scrollspy",
+					"style": {
+						"navigationBarTitleText": "滚动导航",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sync-switch",
+					"style": {
+						"navigationBarTitleText": "标签异步切换",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "dynamic-tab",
+					"style": {
+						"navigationBarTitleText": "标签宽高动态变化",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "tabs-slots",
+					"style": {
+						"navigationBarTitleText": "插槽",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "events",
+					"style": {
+						"navigationBarTitleText": "事件",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "instance-method",
+					"style": {
+						"navigationBarTitleText": "实例方法",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "linkage-with-swiper",
+					"style": {
+						"navigationBarTitleText": "与swiper组件联动",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sync-request",
+					"style": {
+						"navigationBarTitleText": "模拟异步请求渲染标签页",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "custom-navbar",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false,
+						"navigationStyle": "custom",
+						"mp-alipay": {
+							//在支付宝小程序中如果自定义导航栏不生效,需要加上这两行代码
+							"transparentTitle": "always",
+							"titlePenetrate": "YES"
+						}
+					}
+				}
+			]
+		},
+		{
+			"root": "pagesExample",
+			"pages": [{
+					"path": "scrollspy",
+					"style": {
+						"navigationBarTitleText": "滚动导航(页面级滚动)-仿招行热门活动",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "scrollspy-area",
+					"style": {
+						"navigationBarTitleText": "滚动导航(区域滚动)-仿招行热门活动",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "scrollspy-vertical",
+					"style": {
+						"navigationBarTitleText": "侧边栏导航(页面级滚动)",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "scrollspy-vertical-area",
+					"style": {
+						"navigationBarTitleText": "侧边栏导航(区域滚动)-仿奶茶点单",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "compose/index",
+					"style": {
+						"navigationBarTitleText": "组合导航(侧边栏导航+滚动导航)-仿京东商品分类",
+						"enablePullDownRefresh": false,
+						// "onReachBottomDistance": 4,
+						"navigationBarBackgroundColor": "#f1f1f1",
+						"backgroundColor": "#f1f1f1",
+						"backgroundColorTop": "#f1f1f1",
+						"backgroundColorBottom": "#f1f1f1"
+					}
+				},
+				{
+					"path": "news/index",
+					"style": {
+						"navigationBarTitleText": "新闻列表",
+						"enablePullDownRefresh": false,
+						"disableScroll": true //设置为 true 则页面整体不能上下滚动（bounce效果）
+					}
+				},
+				{
+					"path": "news/detail",
+					"style": {
+						"navigationBarTitleText": "新闻列表详情",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "news/share",
+					"style": {
+						"navigationBarTitleText": "分享",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sticky",
+					"style": {
+						"navigationBarTitleText": "滚动吸顶"
+					}
+				},
+				{
+					"path": "transparent_sticky",
+					"style": {
+						"navigationBarTitleText": "透明导航栏下的滚动吸顶",
+						"navigationStyle": "custom",
+						"mp-alipay": {
+							//在支付宝小程序中如果自定义导航栏不生效,需要加上这两行代码
+							"transparentTitle": "always",
+							"titlePenetrate": "YES"
+						}
+					}
+				},
+				{
+					"path": "slide_switch",
+					"style": {
+						"navigationBarTitleText": "滑动切换"
+					}
+				},
+				{
+					"path": "transparent-title-bar",
+					"style": {
+						"navigationBarTitleText": "透明渐变标题栏",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "sticky_slide",
+					"style": {
+						"navigationBarTitleText": "滚动吸顶+滑动切换",
+						"onReachBottomDistance": 0
+					}
+				},
+				{
+					"path": "collapsible-tabs",
+					"style": {
+						"navigationBarTitleText": "可收起标签页-防小红书标签栏(标签动态变化)",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "in-the-popup",
+					"style": {
+						"navigationBarTitleText": "在Popup中的标签页",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "title-bar-click-popup",
+					"style": {
+						"navigationBarTitleText": "点击标签栏显示下拉popup",
+						"enablePullDownRefresh": false
+					}
+				}
+			]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	},
+	"tabBar": {
+		"color": "#666666",
+		"selectedColor": "#343893",
+		"borderStyle": "black",
+		"backgroundColor": "#fff",
+		"list": [{
+				"pagePath": "pages/tabBar/home",
+				"iconPath": "static/image/tabBar/home.png",
+				"selectedIconPath": "static/image/tabBar/home-active.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/tabBar/basic",
+				"iconPath": "static/image/tabBar/basic.png",
+				"selectedIconPath": "static/image/tabBar/basic-active.png",
+				"text": "基础"
+			},
+			{
+				"pagePath": "pages/tabBar/example",
+				"iconPath": "static/image/tabBar/example.png",
+				"selectedIconPath": "static/image/tabBar/example-active.png",
+				"text": "案例"
+			},
+			{
+				"pagePath": "pages/tabBar/my",
+				"iconPath": "static/image/tabBar/my.png",
+				"selectedIconPath": "static/image/tabBar/my-active.png",
+				"text": "我的"
+			}
+		]
+	},
+	"condition": {
+		//模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式（list 的索引项）
+		"list": [{
+			"name": "test", //模式名称
+			"path": "pages/tabBar/my" //启动页面，必选
+		}, {
+			"name": "scrollspy",
+			"path": "pages/pagesBasic/scrollspy"
+		}]
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"id": "y-tabs-example",
+	"name": "y-tabs标签页组件",
+	"version": "2.0.1",
+	"description": "y-tabs组件的用法与案例",
+	"keywords": [],
+	"dcloudext": {
+		"category": [
+			"前端组件",
+			"通用组件"
+		]
+	}
+}
