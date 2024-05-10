@@ -61,18 +61,19 @@
 			}
 		}
 
-		// 指示点样式
-		::v-deep .uni-swiper__dots-box {
-			.uni-swiper__dots-long {
-				width: 34rpx !important;
-			}
-
-			.uni-swiper__dots-item {
-				margin-left: 24rpx;
-
-				&:nth-child(1) {
-					margin-left: 0;
-				}
+	}
+	
+	// 指示点样式
+	::v-deep .uni-swiper__dots-box {
+		.uni-swiper__dots-long {
+			width: 34rpx !important;
+		}
+	
+		.uni-swiper__dots-item {
+			margin-left: 24rpx;
+	
+			&:nth-child(1) {
+				margin-left: 0;
 			}
 		}
 	}

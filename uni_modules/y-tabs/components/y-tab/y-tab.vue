@@ -1,5 +1,5 @@
 <template>
-	<view class="y-tab__pane" :data-index="index" :class="[uniquePaneClass,paneClass]" :style="[paneStyle]" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
+	<view class="y-tab__pane" :data-index="index" :class="[uniquePaneClass,paneClass]" :style="[paneStyle]">
 		<!-- 渲染过的则不再渲染，未渲染的根据激活状态进行渲染 -->
 		<view class="y-tab__pane--wrap" v-if="rendered ? true : active">
 			<slot />
@@ -8,8 +8,6 @@
 </template>
 
 <script>
-	
-	
 	/**
 	 * y-tab 标签
 	 * @description 选项卡组件的子组件，搭配y-tabs使用
@@ -28,14 +26,12 @@
 	 * @property {String}			image-mode	             图片裁剪、缩放的模式，为uniapp内置组件->媒体组件—>image下的mode属性的可选值
 	 * @property {String}			position	             在有图标或图片的情况下，标题围绕它们所在的位置，默认right。可选值：left、top、bottom
 	 */
-	
+
 	import { isNull, toClass, getUid } from '../js/uitls';
-	import { touchMixin } from '../js/touchMixin';
 	import { options } from '../js/const';
 
 	export default {
 		name: 'y-tab',
-		mixins: [touchMixin()],
 		options,
 		props: {
 			title: String, // 标题
@@ -233,15 +229,18 @@
 					// console.log('res:', this.title, res);
 					if (!this.isActiveLast) {
 						// 如果目标节点布局区域的top小于参照节点的top,则说明目标节点在参照节点布局区域之上，intersectionRatio不大于0则说明两者不相交
-						this.isDisjoint = res.intersectionRatio <= 0 && res.boundingClientRect.top < res.relativeRect.top;
+						this.isDisjoint = res.intersectionRatio <= 0 && res.boundingClientRect.top < res
+							.relativeRect.top;
 					} else {
 						// 滚动导航模式下，最后一个pane完成显示但未超出可视范围顶部时，是否设置相离而激活最后一个标签项
-						this.isDisjoint = res.intersectionRatio > 0 && res.boundingClientRect.bottom <= res.relativeRect.bottom;
+						this.isDisjoint = res.intersectionRatio > 0 && res.boundingClientRect.bottom <= res
+							.relativeRect.bottom;
 					}
 
 					// 保证组件初始化完成时执行，避免创建时触发一次监听器的回调函数，导致执行顺序先于tabs的init方法，使底部条错位:
 					// 标签栏点击时触发的滚动不允许设置激活下标
-					if (this.parent.isLoaded && !this.parent.lockedScrollspy) this.parent.setActivedIndexToScroll();
+					if (this.parent.isLoaded && !this.parent.lockedScrollspy) this.parent
+						.setActivedIndexToScroll();
 				});
 				this.paneObserver = paneObserver;
 			},

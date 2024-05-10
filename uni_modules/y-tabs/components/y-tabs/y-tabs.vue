@@ -97,7 +97,8 @@
 		<view class="y-tabs__placeholder" :style="[placeholderStyle]" />
 
 		<!-- 标签内容 -->
-		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchstartByContent">
+		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchStart" @touchmove="touchMove"
+			@touchend="touchEnd">
 			<view class="y-tabs__track" :class="[{ 'is-scrollspy': scrollspy }]" :style="[trackStyle]">
 				<!-- 滚动导航与侧边栏导航的内容区域：使用scroll-view实现区域滚动，否则就是页面级滚动 -->
 				<scroll-view v-if="scrollspy && !pageScroll" class="y-tabs__content-scrollview" scroll-y
@@ -171,13 +172,14 @@
 		noop
 	} from '../js/uitls';
 	import { options, emits, props } from '../js/const';
-
+	import { touchMixin } from '../js/touchMixin';
 
 	export default {
 		name: 'y-tabs',
 		options,
 		emits,
 		props,
+		mixins: [touchMixin()],
 		data() {
 			return {
 				isUnmounted: false, //标记组件是否卸载
@@ -321,7 +323,7 @@
 						'is-vertical': this.isVertical, //标签栏是否垂直
 						'is-scrollNav': this.scrollNav, //滚动导航
 						'is-sidebarNav': this.sidebarNav, //侧边栏导航
-						'is-areaScroll': !this.pageScroll //pane是否为区域滚动
+						'is-areaScroll': !this.pageScroll ,//pane是否为区域滚动
 					},
 					`y-tabs--${this.type}`);
 			},
@@ -349,8 +351,10 @@
 			},
 			// 标签栏容器样式
 			innerWrapStyle() {
+				const style = {};
 				// 透明标签栏使用transparentBgColor
-				const style = { background: !this.transparent ? this.background : this.transparentBgColor };
+				const background = !this.transparent ? this.background : this.transparentBgColor;
+				if (!isNull(background)) style.background = background
 				// 滚动吸顶
 				if (this.isFixed) {
 					style.top = this.offsetTop + 'px';
@@ -715,7 +719,8 @@
 					await this.setLine(); //设置底部线条位置
 
 					// 滚动到指定的pane (非第一个标签时内容滚动到指定位置可能会不准确，取决于pane中的内容何时渲染完)
-					if (this.currentIndex > 0) this.scrollToCurrentContent(true);
+					// fix: 使用scrollTo方法
+					// if (this.currentIndex > 0) this.scrollToCurrentContent(true);
 					this.emitLoaded(); // emit loaded事件
 				} finally {
 					callback && callback();
@@ -738,7 +743,7 @@
 			// 销毁观察器
 			destroyObserver() {
 				['dependObserver', 'tranObserver'].forEach(name => this.disconnectObserver(name));
-				this.childrens.forEach(child => child.disconnectObserver());
+				this.childrens?.forEach(child => child.disconnectObserver());
 			},
 			// 断掉观察，释放资源
 			disconnectObserver(observerName) {
@@ -896,7 +901,6 @@
 			// 将激活的tab滚动到可见区域中
 			async scrollIntoView() {
 				if (!this.scrollX && !this.scrollY) return; // 不能水平滚动也不能垂直滚动时就阻止
-
 				const rect = this.tabRects[this.currentIndex];
 				const fieldName = !this.isVertical ? "scrollLeft" : "scrollTop"; //设置标签栏scroll-view水平/垂直滚动偏移量的变量名
 				// 结束的滚动位置：如果标签需滚动至中心,取scrollOffset；否则标签水平展示取offsetLeft，垂直展示取offsetTop
@@ -941,8 +945,9 @@
 			handleScrollByNav(e) {
 				this.scrollDetail = e?.detail;
 			},
-			// 内容区域触摸开始事件,释放滚动锁，解除pane区域滚动时对tab标签进行定位时的锁定
-			touchstartByContent() {
+			// 释放滚动锁
+			releaseScrollspyLock() {
+				// 内容区域触发了触摸开始事件,解除pane区域滚动时对tab标签进行定位时的锁定
 				this.lockedScrollspy = false;
 			},
 			// 释放pane滚动锁
@@ -954,7 +959,7 @@
 				this.intervalFn(async (clear) => {
 					const rect = await this.getScrollViewRect();
 					if (rect.scrollTop >= scrollTop - 5 && rect.scrollTop <= scrollTop + 5) {
-						this.touchstartByContent();
+						this.releaseScrollspyLock(); //释放滚动锁
 						clear();
 					}
 				}, "paneLockedTimer", ms)
@@ -1001,9 +1006,17 @@
 				// isSlide为true，表示左右滑动；false表示点击标签切换内容的转场动画；
 				const left = isSlide ? offsetWidth + 'px' : -100 * this.currentIndex + '%';
 				duration = isNull(duration) ? this.duration : duration;
-				const transition = this.animated ? `left ${duration}s ease-in-out` : 'none';
-				// 使用left替换transform，因为transform会导致设置了fixed的元素变成绝对定位
-				this.trackStyle = { left, transition };
+				
+				// 使用left替换transform，因为transform会导致设置了fixed的元素变成绝对定位（uni-datetime-picker、uni-popup）
+				// this.trackStyle = { left, transition：this.animated ? `left ${duration}s linear` : 'none' };
+				
+				// fix（v2.2.8）：
+				// 在微信开发者工具上,使用了left，transition有时会失效，left效果不好，仍使用transform
+				// 需避免有fixed的元素嵌套在y-tab中
+				this.trackStyle = {
+					transform: `translate(${left}, 0px) translateZ(0px)`,
+					transition: this.animated ? `transform ${duration}s linear` : 'none',
+				}
 			},
 			// 改变标签内容样式
 			async changePaneStyle() {
@@ -1191,7 +1204,7 @@
 			},
 			// 内容滑动结束时的毛毛虫动画模拟
 			handleWormAnimated(deltaX, currIndex, targetIndex, isChange) {
-				// 使用transform与widht同时过渡时，两者不一定并行变化，会导致滑块错位，因此使用定时器模拟过渡；
+				// 使用transform与width同时过渡时，两者不一定并行变化，会导致滑块错位，因此使用定时器模拟过渡；
 				return new Promise(resolve => {
 					this.barAnimated = false; //关闭滑块动画
 					const

@@ -13,6 +13,7 @@
 			<uni-list-item title="侧边栏导航(区域滚动)-仿奶茶点单" showArrow clickable @click="onClick('scrollspy-vertical-area')" />
 			<uni-list-item title="组合导航(侧边栏导航+滚动导航)-仿京东商品分类" showArrow clickable @click="onClick('compose/index')" />
 			<uni-list-item title="可收起标签页-防小红书标签栏(标签动态变化)" showArrow clickable @click="onClick('collapsible-tabs')" />
+			<uni-list-item title="嵌套标签页" showArrow clickable @click="onClick('nested-tabs')" />
 			<!-- <uni-list-item title="点击标签栏显示下拉popup" showArrow clickable @click="onClick('title-bar-click-popup')" /> -->
 			<!-- <uni-list-item title="滚动吸顶+滑动切换" showArrow clickable @click="onClick('sticky_slide')" /> -->
 		</uni-list>

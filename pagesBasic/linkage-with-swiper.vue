@@ -8,7 +8,7 @@
 			<view class="title-wrap__desc">请注意swiper组件的@transition、@animationfinish的支持平台。</view>
 			<view class="title-wrap__desc">经过测试，仅支持App、H5、微信、支付宝、字节跳动、QQ、快手小程序。</view>
 		</view>
-		<y-tabs ref="tabs" v-model="activeIndex" animated :barAnimateMode="barAnimateMode" :scrollToCenter="false">
+		<y-tabs ref="tabs" v-model="activeIndex" animated :barAnimateMode="barAnimateMode">
 			<y-tab v-for="(item, index) in tabs" :title="item.title" :key="index" />
 		</y-tabs>
 
@@ -18,7 +18,7 @@
 			2. @animationfinish: 字节跳动、飞书小程序不支持(在change事件中unlockDx)
 		 -->
 		<swiper class="swiper" :current="activeIndex" @transition="onTransition" @animationfinish="onAnimationfinish" @change="onChange">
-			<swiper-item v-for="(item, index) in tabs" :key="index">
+			<swiper-item v-for="(item, index) in tabs" :key="index" class="custom-swiper-item">
 				<view class="swiper-item-view" :style="{backgroundColor: item.color}">
 					<view>{{item.title}}</view>
 				</view>
@@ -153,5 +153,10 @@
 		.uni-list-item__content-title {
 			font-size: 14px;
 		}
+	}
+	
+	::v-deep .custom-swiper-item{
+		// display: inline-flex;
+		// position: relative !important;
 	}
 </style>

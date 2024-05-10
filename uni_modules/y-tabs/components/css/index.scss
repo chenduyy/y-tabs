@@ -1,6 +1,7 @@
 .y-tabs {
 	position: relative;
 	display: block;
+	width: 100%;
 
 	// 标签栏垂直方位下的根容器样式
 	&.is-vertical {
@@ -14,6 +15,10 @@
 		.y-tabs__scroll {
 			flex-direction: column;
 		}
+	}
+	
+	&.is-cancel-tonch{
+		touch-action: none;
 	}
 
 	// 区域滚动下的滚动导航
@@ -430,7 +435,8 @@
 	position: relative;
 	display: flex;
 	width: 100%;
-	will-change: left;
+	// will-change: left;
+	will-change: transform;
 
 	// 滚动导航模式下内容卡片垂直排列
 	&.is-scrollspy {
@@ -448,6 +454,7 @@
 	flex-direction: row;
 	display: block;
 	visibility: visible;
+	transform: translate(0px, 0px) translateZ(0px);
 
 	// 选中时
 	&.is-active {

@@ -482,12 +482,15 @@ export default{
 ### uni-data-select组件显示下拉选项时会被遮挡？
 受限于tabs组件样式，内容区域使用了`overflow:hidden`,导致`uni-data-select`下拉选项被遮挡，需要给其父容器设置足够的高度才能完整显示
 
+### uni-datetime-picker、uni-popup等使用fixed定位的组件显示位置不对？
+由于y-tab使用了```transform: translate(0px, 0px) translateZ(0px);```,需避免fixed元素被y-tab包裹，请放在y-tabs组件的外层
+
 ### 如何在自定义组件中修改y-tabs组件的样式？
 在微信小程序端，在自定义组件中使用了`y-tabs`，需要设置`styleIsolation: 'shared'`,否则在自定义组件中无法修改`y-tabs`的样式
  
  
 ### 如何修改y-tabs的样式：
-* 如果在自定义组件或页面中引入了y-tabs，使用 `::v-deep` 在`y-tabs`所在的页面进行修改
+* 如果在`自定义组件`或`页面`中引入了y-tabs，使用 `::v-deep` 在`y-tabs`所在的`页面`进行修改
 * 将要修改的样式放在全局样式中，但要给`y-tabs`赋予一个全局唯一的类名，避免全局样式污染
 * 仅在微信小程序端，如果自定义组件中使用了`y-tabs`并想修改其样式，需要在自定义组件上配置`styleIsolation: 'shared'`
 
@@ -524,6 +527,18 @@ export default {
 }
 ```
  
+ 
+ ### 如果在进入页面时又跳转了其他页面，会导致y-tabs内部未初始化完成，因此底部条会错位：
+* 场景：进入‘我的’页面，检测到用户未登录，跳转至登录页进行登录后又回到‘我的’页面
+* 解决方法如下：
+
+ ```javascript
+export default {
+   onShow() {
+	// 如果进入该页面又跳转了其他页面，则在onShow中resize一下组件，避免跳转其他页面时tabs内部未初始化完成
+	this.$refs?.tabs?.resize()
+},
+```
 
  
  

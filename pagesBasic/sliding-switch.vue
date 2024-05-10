@@ -10,10 +10,12 @@
 		</view>
 		<y-tabs v-model="activeIndex" swipeable :barAnimateMode="barAnimateMode">
 			<y-tab class="y-tab-virtual" v-for="(item,index) in tabs" :key="item.key" :title="item.title">
-				<view class="content-wrap" :style="{backgroundColor: item.color,height:'30vh',color:'#fff'}"> 内容{{item.key}} </view>
+				<view class="content-wrap" :style="{backgroundColor: item.color,height:'30vh',color:'#fff'}">
+					内容{{item.key}}
+				</view>
 			</y-tab>
 		</y-tabs>
-		
+
 		<view class="title-wrap">
 			滑动切换时滑块的动画效果
 			<view class="title-wrap__desc">使用barAnimateMode设置，默认为linear(线性运动动画)。</view>
@@ -38,7 +40,7 @@
 	export default {
 		data() {
 			return {
-				tabs: this.$getTabs(3),
+				tabs: this.$getTabs(15),
 				activeIndex: 0,
 				barAnimateMode: 'worm',
 				styles: [{
@@ -60,7 +62,7 @@
 				],
 			}
 		},
-		methods:{
+		methods: {
 			styleChange(e) {
 				if (this.barAnimateMode !== e.detail.value) this.barAnimateMode = e.detail.value
 			},
@@ -96,10 +98,10 @@
 			border-bottom-style: solid;
 			border-bottom-width: 1px;
 			border-bottom-color: #eee;
-		} 
+		}
 
 		.uni-list-item__content-title {
 			font-size: 14px;
 		}
 	}
-</style> 
+</style>

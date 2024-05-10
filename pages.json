@@ -267,6 +267,14 @@
 						"navigationBarTitleText": "点击标签栏显示下拉popup",
 						"enablePullDownRefresh": false
 					}
+				},
+				{
+					"path" : "nested-tabs",
+					"style" : 
+					{
+						"navigationBarTitleText" : "嵌套标签页",
+						"enablePullDownRefresh" : false
+					}
 				}
 			]
 		}

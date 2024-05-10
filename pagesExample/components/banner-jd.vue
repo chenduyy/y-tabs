@@ -2,7 +2,8 @@
 	<!-- 顶部轮播区域 -->
 	<view class="banner-wrapper">
 		<uni-swiper-dot :info="swiperList" :current="current" field="content" mode="round" :dots-styles="dotsStyles">
-			<swiper class="swiper-box" :autoplay="autoplay" :interval="interval" :duration="duration" @change="handleChange">
+			<swiper class="swiper-box" :autoplay="autoplay" :interval="interval" :duration="duration"
+				@change="handleChange">
 				<swiper-item v-for="(img ,index) in swiperList" :key="index" class="swpier-item-wrap">
 					<view class="swiper-item">
 						<image class="swpier-item-img" :src="img" mode="scaleToFill" />
@@ -50,29 +51,29 @@
 
 <style lang="scss" scoped>
 	// 顶部轮播banner区域
-	::v-deep.banner-wrapper {
+	.banner-wrapper {
 		position: relative;
 		margin: 20rpx 0;
 		box-sizing: border-box;
+	}
+	
+	.swpier-item-wrap {
+		border-radius: 6px;
+	}
 
-		.swiper-item {
-			margin: 0 10px 0 0;
-		}
+	.swiper-item {
+		margin: 0 10px 0 0;
+	}
 
-		// 轮播
-		.swiper-box {
-			height: 160rpx;
+	// 轮播
+	.swiper-box {
+		height: 160rpx;
 
-			.swpier-item-img {
-				width: 100%;
-				height: 160rpx;
-				border-radius: 12rpx;
-			}
-		}
+	}
 
-		.swpier-item-wrap {
-			border-radius: 6px;
-		}
-
+	.swpier-item-img {
+		width: 100%;
+		height: 160rpx;
+		border-radius: 12rpx;
 	}
 </style>
