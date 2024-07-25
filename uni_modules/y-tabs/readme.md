@@ -321,7 +321,7 @@
 	</tr>
 	<tr><td colspan="4" height="60">  <font color="#1989fa">滚动吸顶相关属性 :</font> </td><td>  </td></tr>
 	<tr><td> sticky	</td><td> boolean	</td><td> 是否使用粘性布局进行滚动吸顶 <font color="#1989fa" size="1">案例 ：滚动吸顶</font>	</td><td> false</td><td>  </td></tr>
-	<tr><td> offset-top    </td><td> number、string </td><td> 粘性布局下标签栏与顶部的最小距离，单位为 px </td><td> 0 </td><td> 注意单位问题，如果是rpx，需要uni.upx2px转为px </td></tr>
+	<tr><td> offset-top    </td><td> number、string </td><td> 粘性布局下标签栏与顶部的最小距离，单位为 px </td><td> 0[h5端由于导航栏为自定义导航栏，默认44] </td><td> 注意单位问题，如果是rpx，需要uni.upx2px转为px </td></tr>
 	<tr><td> z-index    </td><td> number、string </td><td> 粘性布局下，标签栏的z-index值  </td><td> 99 </td><td>  </td></tr>
 	<tr><td> sticky-threshold </td><td> number、string </td><td> 粘性布局吸顶的判断阈值 </td><td> 0</td><td> 表示在页面滚动时,标签栏距屏幕顶部多少px时会触发吸顶函数进行吸顶判断 <font color="#1989fa" size="1">案例 ：透明导航栏下的滚动吸顶</font> </td></tr>
 	<tr><td> transparent    </td><td> boolean </td><td> 页面滚动过程中,标题栏背景色是否透明渐变 <font color="#1989fa" size="1">案例 ：透明渐变标题栏</font>  </td><td> false </td><td> background属性值必须为rgba格式 </td></tr>

@@ -424,7 +424,12 @@
 .y-tabs__content {
 	display: block;
 	position: relative;
-	overflow: hidden; //会导致uni-data-select无法撑开显示下拉选项,最好给pane中的内容设置一个高度(如果包裹select的父元素都没有设置relative，则不会裁剪absolute属性的元素)
+	height: 100%;
+	
+	// 非导航模式才设置overflow，否则会影响position: sticky
+	&:not(.is-scrollspy){
+		overflow: hidden; //会导致uni-data-select无法撑开显示下拉选项,最好给pane中的内容设置一个高度(如果包裹select的父元素都没有设置relative，则不会裁剪absolute属性的元素)
+	}
 	// 标签栏垂直展示，内容减去标签栏默认宽度
 	&.is-vertical {
 		width: 100%;
@@ -454,7 +459,11 @@
 	flex-direction: row;
 	display: block;
 	visibility: visible;
-	transform: translate(0px, 0px) translateZ(0px);
+	
+	// 非导航模式才设置transform
+	&:not(.is-scrollspy){
+		transform: translate(0px, 0px) translateZ(0px); //会导致固定定位（position: fixed）元素变为绝对定位（position: absolute
+	}
 
 	// 选中时
 	&.is-active {

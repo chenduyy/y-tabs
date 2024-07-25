@@ -323,7 +323,7 @@
 						'is-vertical': this.isVertical, //标签栏是否垂直
 						'is-scrollNav': this.scrollNav, //滚动导航
 						'is-sidebarNav': this.sidebarNav, //侧边栏导航
-						'is-areaScroll': !this.pageScroll ,//pane是否为区域滚动
+						'is-areaScroll': !this.pageScroll, //pane是否为区域滚动
 					},
 					`y-tabs--${this.type}`);
 			},
@@ -476,6 +476,10 @@
 				// #endif
 				return width
 			},
+			// 页面级滚动，非导航模式下，如果标签栏吸顶，记录上一个pane的滚动位置，保证切换切换回来时自动定位
+			pageScrollLocate() {
+				return this.pageScroll && !this.scrollspy && this.isFixed
+			},
 		},
 		watch: {
 			// 监听子组件数组长度变化，赋index值
@@ -506,7 +510,7 @@
 					this.setLine(); //设置底部线条位置
 					this.changeStatus(newIdx, oldIdx); // 状态变更
 					this.changeStyle(); // 样式切换
-					this.scrollPosition(newIdx, oldIdx); //内容滚动位置定位
+					// this.scrollPosition(newIdx, oldIdx); //内容滚动位置定位
 				})
 			},
 			// 监听背景色变化，重新获取rgba各值
@@ -920,6 +924,7 @@
 
 				// 获取当前pane上边距与页面顶部的距离
 				let { top = 0 } = await this.childrens[this.currentIndex].getRect();
+
 				if (this.pageScroll) {
 					// 页面滚动，滚动导航模式下设置了吸顶，需要减去标签栏高度及标签栏距离屏幕顶部的高度
 					if (this.scrollNav && this.sticky) {
@@ -934,6 +939,8 @@
 
 				// 实际的滚动距离 = 滚动距离 + 计算得到的pane距滚动区域顶部的真实距离
 				scrollTop += top;
+				scrollTop = Math.max(0, scrollTop)
+				scrollTop += Math.random() * 0.1 //加一个随机数（避免当重复设置某些属性为相同的值时，不会同步到view层）
 
 				// 页面滚动使用自己设定的动画时长，区域滚动时使用scroll-view设置的动画效果,大概300ms
 				if (this.pageScroll) uni.pageScrollTo({ scrollTop, duration: immediate ? 0 : this.msDuration })
@@ -954,7 +961,7 @@
 			async unLockedPane(scrollTop) {
 				// 通过定时器查询当前页面滚动的距离，来判断页面或者scroll-view是否滚动结束
 				// 滚动结束时，释放滚动锁，避免使用鼠标滚轮滚动因锁无法定位到tab标签
-				await this.$nextTick(noop); //fixed：部分用户使用了uView库，该库对$nextTick进行了重写但是未判空，因此传入一个空函数避免报错
+				await this.callNextTick()
 				const ms = (this.pageScroll ? this.msDuration : 300) + 50;
 				this.intervalFn(async (clear) => {
 					const rect = await this.getScrollViewRect();
@@ -988,28 +995,29 @@
 				this.childrens.forEach((child, index) => (child.active = newIdx === index));
 			},
 			// 样式切换
-			changeStyle() {
-				// 非滚动导航
-				if (!this.scrollspy) {
-					this.changeTrackStyle(false); //改变标签内容滑动轨道样式
-					//改变标签内容样式
-					// #ifdef H5
-					setTimeout(() => this.changePaneStyle(), 50); // H5端首页时第一次获取高度有问题,使用setTimeout
-					// #endif
-					// #ifndef H5
-					this.$nextTick(() => this.changePaneStyle());
-					// #endif
-				}
+			async changeStyle() {
+				// 非滚动导航,不对内容区进行样式调整
+				if (this.scrollspy) return
+				this.changeTrackStyle(false); //改变标签内容滑动轨道样式
+				await this.callNextTick(); //nextTick一下
+
+				//改变标签内容样式
+				// #ifdef H5
+				setTimeout(() => this.changePaneStyle(), 50); // H5端：tabs嵌入的页面为tabBar配置的第一个页面时，获取高度有问题,使用setTimeout
+				// #endif
+				// #ifndef H5
+				this.changePaneStyle();
+				// #endif
 			},
 			// 改变标签内容滑动轨道样式
 			changeTrackStyle(isSlide = false, duration, offsetWidth = 0) {
 				// isSlide为true，表示左右滑动；false表示点击标签切换内容的转场动画；
 				const left = isSlide ? offsetWidth + 'px' : -100 * this.currentIndex + '%';
 				duration = isNull(duration) ? this.duration : duration;
-				
+
 				// 使用left替换transform，因为transform会导致设置了fixed的元素变成绝对定位（uni-datetime-picker、uni-popup）
 				// this.trackStyle = { left, transition：this.animated ? `left ${duration}s linear` : 'none' };
-				
+
 				// fix（v2.2.8）：
 				// 在微信开发者工具上,使用了left，transition有时会失效，left效果不好，仍使用transform
 				// 需避免有fixed的元素嵌套在y-tab中
@@ -1022,35 +1030,44 @@
 			async changePaneStyle() {
 				const curr = this.childrens[this.currentIndex]; //当前pane
 				if (!curr) return;
+
+				// 页面级滚动，非导航模式下，如果标签栏吸顶，记录上一个pane的滚动位置，保证切换切换回来时自动定位
+				let viewScrollTop = null;
+				if (this.pageScrollLocate) {
+					const rect = await this.getScrollViewRect(); //获取滚动容器此时的滚动高度
+					viewScrollTop = rect?.scrollTop;
+					if (!isNull(this.lastIndex)) this.$set(this.tabs[this.lastIndex], "scrollTop", viewScrollTop)
+				}
+
+				//清除当前pane的样式，默认高度为auto
 				curr.paneStyle = null;
+
+				// 隐藏pane高度统一为显示pane的高度
 				const rect = await curr.getRect('.y-tab__pane--wrap');
 				const panStyle = { height: rect?.height + 'px' };
 				this.tabs.filter(o => !o.show).forEach(tab => {
 					const pane = this.childrens[tab.index];
 					if (pane) pane.paneStyle = panStyle;
 				});
-			},
-			// 吸顶时，记录上一个标签的滚动距离，获取当前标签的滚动距离滚动到对应位置
-			async scrollPosition(newIdx, oldIdx) {
-				// 非滚动导航，吸顶时，保存每个标签内容的滚动距离，切换回去时滚动到对应的位置
-				if (!this.scrollspy && this.isFixed) {
-					const res = await this.getScrollViewRect();
-					if (!isNull(oldIdx)) this.$set(this.tabs[oldIdx], "scrollTop", res?.scrollTop)
 
-					await this.$nextTick(noop)
+				if (this.pageScrollLocate) {
 					// 获取当前标签内容之前的滚动位置
-					let scrollTop = this.tabs[newIdx]?.scrollTop
+					let scrollTop = this.tabs[this.currentIndex]?.scrollTop
+					// 获取不到时，默认滚动到吸顶临界值的距离
 					if (isNull(scrollTop)) {
-						// 如果没获取到，则设置为刚吸顶的滚动距离
-						const rect = await this.childrens[oldIdx].getRect()
-						scrollTop = res?.scrollTop + rect.top - this.wrapRect.height + 2
+						const rect = await this.childrens?.[this.lastIndex]?.getRect()
+						// 取上一个pane距屏幕顶部的高度+滚动高度 - 吸顶与标签栏高度之和
+						scrollTop = viewScrollTop + rect?.top - this.wrapRect.height - this.offsetTop + 2
 					}
-					if (!isNull(scrollTop)) uni.pageScrollTo({ scrollTop, duration: 0 })
+
+					// 当前pane滚动到上次所在的位置
+					if (!isNull(scrollTop)) this.$nextTick(() => uni.pageScrollTo({ scrollTop, duration: 0 }))
 				}
 			},
 			// 清除标签内容的滚动位置
 			clearScrollPostion() {
-				if (!this.scrollspy && this.isFixed) this.tabs.forEach(tab => this.$set(tab, "scrollTop", null))
+				// 页面级滚动，非导航模式下，标签吸顶时清除上次的位置数据
+				if (this.pageScrollLocate) this.tabs.forEach(tab => this.$set(tab, "scrollTop", null))
 			},
 			// 获取标签栏scroll-view当前的滚动偏移量
 			getTabScrollOffset() {
@@ -1196,7 +1213,7 @@
 
 				// 如果标签宽高动态变化，会导致滑块错位，这里修正一下；如果使用了过渡，仍会错位
 				if (this.isDynamic) {
-					await this.$nextTick(noop);
+					await this.callNextTick(); //nextTick一下
 					this.disabledSetLine = false;
 					this.setLine();
 				}
@@ -1274,6 +1291,8 @@
 					// 飞书：
 					// 向左滑动： 第一屏 {dx:0} -> {dx:222} -> {dx:375}   第二屏  {dx:375} -> {dx:680} -> {dx:750}
 					// 向右滑动： 第一屏 {dx:375} -> {dx:222} -> {dx:0}   第二屏  {dx:750} -> {dx:680} -> {dx:375}
+
+					// 处理快手的dx
 					// #ifdef MP-KUAISHOU
 					dx = dx - this.currentIndex * this.contentWidth; //向左滑动时，算出一屏的变化
 					// #endif
@@ -1287,6 +1306,7 @@
 				}
 
 			},
+			// 设置滑块偏移量及宽度
 			handleDx(deltaX, isSwiper = true) {
 				const values = this.getBarPostion(this.currentIndex, deltaX);
 				if (!values) return;
@@ -1297,6 +1317,7 @@
 				// 内容页滑动时触发（仅barAnimateMode为linear、worm、worm-ease时有效）
 				if (!isSwiper) this.$emit("slide-change", { dx, rate, targetIndex });
 			},
+			// 获取滑块应变化的位置
 			getBarPostion(currIndex, dx) {
 				let barOffset = this.barOffset;
 				let barCalcedWidth = this.barCalcedWidth;
@@ -1464,6 +1485,14 @@
 					cb && cb(clear)
 				}, ms);
 			},
+			// 包装一下nextTick的调用：部分用户使用了uView库，该库对$nextTick进行了重写但是未判空，因此传入一个空函数避免报错
+			callNextTick() {
+				return new Promise(resolve => {
+					this.$nextTick(() => {
+						resolve && resolve()
+					})
+				})
+			}
 		}
 	};
 </script>

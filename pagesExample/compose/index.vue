@@ -3,7 +3,7 @@
 		<!-- <view class="gray-wrap"></view> -->
 		<!-- 左侧导航区域：使用侧边栏导航+固定定位固定在左侧 -->
 		<view class="left-wrap">
-			<left-nav ref="leftNavRef" @change="onChange" :nextTitle.sync="nextTitle" />
+			<left-nav ref="leftNavRef" @change="onChange" @changeNextTitle="(value)=> nextTitle = value" />
 		</view>
 		<!-- 右侧内容区域：使用页面级滚动的滚动导航-->
 		<view class="right-wrap">

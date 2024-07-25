@@ -21,8 +21,8 @@
 				4.在H5端，由于有顶部导航栏的存在，需要设置一下offsetTop,让吸顶的导航栏减去这部分高度
 		 
 		 -->
-		 
-		 <!--  :wrapStyle="wrapStyle" @sticky-change="stickyChange" -->
+
+		<!--  :wrapStyle="wrapStyle" @sticky-change="stickyChange" -->
 		<y-tabs ref="yTabs" v-model="activeIndex" background="#f7f7f7" color="#0050c8" bar-height="64" scrollspy
 			direction="vertical" sticky :offsetTop="offsetTop">
 			<y-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :position="tab.position || 'right'"
@@ -161,6 +161,15 @@
 			padding-left: 24rpx;
 
 			.title-wrap {
+				position: sticky;
+				/* #ifdef H5 */
+				top: 44px;
+				/* #endif */
+				/* #ifndef H5 */
+				top: 0;
+				/* #endif */
+				z-index: 1;
+				background: #fff;
 				font-size: 24rpx;
 				font-weight: 520;
 				color: #333;

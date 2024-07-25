@@ -66,7 +66,7 @@
 			nextTitle: {
 				immediate: true,
 				handler(value) {
-					this.$emit('update:nextTitle', value)
+					this.$emit('changeNextTitle', value)
 				}
 			},
 		},

@@ -30,7 +30,10 @@
 						<view class="salc-num-wrapper">
 							已售卖{{item.saleNum+(item.saleNum>=100?'+':'')}}件
 						</view>
-						<text class="iconfont icon-tianjia"></text>
+						<view class="add-icons">
+							<uni-icons type="plusempty" size="10" color="#fff" />
+						</view>
+
 					</view>
 				</view>
 			</uni-grid-item>
@@ -495,7 +498,7 @@
 			}
 
 			// 添加图标
-			.iconfont {
+			.add-icons {
 				position: absolute;
 				right: 24rpx;
 				bottom: 20rpx;

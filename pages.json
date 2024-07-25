@@ -275,6 +275,16 @@
 						"navigationBarTitleText" : "嵌套标签页",
 						"enablePullDownRefresh" : false
 					}
+				},
+				{
+					"path" : "waterfall",
+					"style" : 
+					{
+						"navigationBarTitleText" : "结合瀑布流",
+						// "enablePullDownRefresh" : false,
+						"onReachBottomDistance": 0,
+						"disableScroll": true //设置为 true 则页面整体不能上下滚动（bounce效果）
+					}
 				}
 			]
 		}

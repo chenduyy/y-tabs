@@ -154,7 +154,13 @@ const props = {
 	// 粘性布局下与顶部的最小距离，单位为px
 	offsetTop: {
 		type: [Number, String],
+		// #ifdef H5
+		// H5端的导航栏属于“自定义”导航栏的范畴，因为它是非原生的，与普通元素一致
+		default: 44,
+		// #endif
+		// #ifndef H5
 		default: 0
+		// #endif
 	},
 	// 粘性布局下标签栏的z-index值
 	zIndex: {
@@ -209,4 +215,3 @@ export {
 // 用户反映select-picker被遮挡：下拉区域使用absolute，被内容区域的overflow所裁剪，除非select组件使用fixed定位
 
 // 考虑支持nvue
-// barWidth增加auto值，自适应标签宽度

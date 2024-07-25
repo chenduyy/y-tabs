@@ -53,7 +53,7 @@
 	 * @property {Boolean}            disabled	          是否禁用上拉加载		           false
 	 * @event {Function(index)} refresh 上拉加载时触发 
 	 * 
-	 * @example <y-pull-loading v-model="isLoading" @refresh="onRefresh" @reachBottom="reachBottom"></y-pull-loading>
+	 * @example <y-pull-loading v-model="isLoading" @refresh="onRefresh"> .... </y-pull-loading>
 	 * 如果是页面滚动，需在生命周期onReachBottom中发出事件：uni.$emit('reachBottom')
 	 * 如果嵌入到scrollView中，则在scrolltolower中发出事件：uni.$emit('reachBottom')
 	 * 
@@ -266,7 +266,6 @@
 				const rect = await this.getViewportRect();
 				// 滚动到底后，如果scrollTop+height与scrollHeight有细微的偏差，可以考虑加1px
 				this.isBottom = Math.ceil(rect.scrollTop + rect.height) >= rect.scrollHeight;
-				// console.log("rect:", this.isBottom);
 			},
 			// 获取页面的滚动高度
 			getViewportRect() {

@@ -6,7 +6,7 @@
 			<view>在导航栏+状态栏透明的场景下的标签栏吸顶。</view>
 			<view>本案例在微信小程序中，未吸顶时，标签栏背景色为灰色，且没有paddingTop值;吸顶时，标签栏背景色为白色，有paddingTop值，paddingTop撑开了透明的状态栏+导航栏区域</view>
 		</view>
-		<y-tabs v-model="activeIndex" :background="background"  sticky :wrapStyle="wrapStyle" :stickyThreshold="navHeight" @sticky-change="stickyChange">
+		<y-tabs v-model="activeIndex" :background="background"   sticky :offsetTop="0" :wrapStyle="wrapStyle" :stickyThreshold="navHeight" @sticky-change="stickyChange">
 			<y-tab class="y-tab-virtual" v-for="(title, index) in tabs" :title="title" :key="index">
 				<goods-list :activeIndex="index" />
 			</y-tab>

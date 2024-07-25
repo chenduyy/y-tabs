@@ -2,7 +2,8 @@
 	<!-- 禁止滚动穿透 -->
 	<view class="page-container">
 		<banner />
-		<y-tabs  v-model="activeIndex" :background="background" animated sticky :wrapStyle="wrapStyle" :stickyThreshold="navHeight" @sticky-change="stickyChange" swipeable>
+		<y-tabs v-model="activeIndex" :background="background" animated sticky :offsetTop="0" :wrapStyle="wrapStyle"
+			:stickyThreshold="navHeight" @sticky-change="stickyChange" swipeable >
 
 			<!-- 标签栏右侧内容 -->
 			<template #nav-right>

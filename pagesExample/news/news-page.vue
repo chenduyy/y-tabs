@@ -2,8 +2,9 @@
 	<view class="page-news">
 		<!-- #ifdef APP-NVUE -->
 		<list class="listview">
-			<refresh :display="refreshing" @refresh="onrefresh" @pullingdown="onpullingdown"></refresh>
-			<cell v-for="(item, index) in dataList" :key="item.id"><news-item :newsItem="item" @close="closeItem(index)" @click="goDetail(item)"></news-item></cell>
+			<refresh :display="refreshing" @refresh="onRefresh" @pullingdown="onpullingdown"></refresh>
+			<cell v-for="(item, index) in dataList" :key="item.id"><news-item :newsItem="item" @close="closeItem(index)"
+					@click="goDetail(item)"></news-item></cell>
 			<cell v-if="isLoading || dataList.length > 4">
 				<view class="loading-more">
 					<text class="loading-more-text">加载中...</text>
@@ -12,8 +13,11 @@
 		</list>
 		<!-- #endif -->
 		<!-- #ifndef APP-NVUE -->
-		<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" scroll-y @scrolltolower="loadMore()">
-			<view v-for="(item, index) in dataList" :key="item.id"><news-item :newsItem="item" @close="closeItem(index)" @click="goDetail(item)"></news-item></view>
+		<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" scroll-y refresher-enabled
+			:refresher-triggered="refreshing" @refresherrefresh="onRefresh" @refresherrestore="onRestore"
+			@scrolltolower="loadMore()">
+			<view v-for="(item, index) in dataList" :key="item.id"><news-item :newsItem="item" @close="closeItem(index)"
+					@click="goDetail(item)"></news-item></view>
 			<view class="loading-more" v-if="isLoading || dataList.length > 4">
 				<text class="loading-more-text">加载中...</text>
 			</view>
@@ -52,7 +56,7 @@
 				},
 				pullTimer: null,
 				pulling: false,
-				refreshing: false,
+				refreshing: false,//设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发
 				refreshFlag: false,
 				refreshText: '',
 				isLoading: false,
@@ -62,7 +66,6 @@
 			};
 		},
 		created() {
-
 			this._isWidescreen = false;
 			// #ifdef H5
 			var mediaQueryOb = uni.createMediaQueryObserver(this);
@@ -130,7 +133,8 @@
 								id: this.newGuid() + news.id,
 								newsid: news.id,
 								article_type: 1,
-								datetime: friendlyDate(new Date(news.published_at.replace(/\-/g, '/')).getTime()),
+								datetime: friendlyDate(new Date(news.published_at.replace(/\-/g, '/'))
+									.getTime()),
 								title: news.title,
 								image_url: news.cover,
 								source: news.author_name,
@@ -203,11 +207,15 @@
 				this.refreshText = '正在刷新...';
 				this.loadData(true);
 			},
-			onrefresh(e) {
+			onRefresh(e) {
 				this.refreshData();
 				// #ifdef APP-NVUE
 				this.$refs.list.resetLoadmore();
 				// #endif
+			},
+			// 自定义下拉刷新被复位
+			onRestore() {
+				this.refreshing = false; // 需要重置
 			},
 			onpullingdown(e) {
 				if (this.refreshing) {
@@ -233,7 +241,8 @@
 				let s4 = function() {
 					return ((65536 * (1 + Math.random())) | 0).toString(16).substring(1);
 				};
-				return (s4() + s4() + '-' + s4() + '-4' + s4().substr(0, 3) + '-' + s4() + '-' + s4() + s4() + s4()).toUpperCase();
+				return (s4() + s4() + '-' + s4() + '-4' + s4().substr(0, 3) + '-' + s4() + '-' + s4() + s4() + s4())
+					.toUpperCase();
 			}
 		}
 	};

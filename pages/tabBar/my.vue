@@ -6,6 +6,10 @@
 				:title="tab.title+(index==2?'哈哈哈哈哈哈哈哈哈哈哈哈哈哈':'')">
 				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
 			</y-tab> -->
+		<!-- 	<y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
+				:title="tab.title">
+				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
+			</y-tab> -->
 			<!-- <y-tab class="y-tab-virtual" title="1111111">
 				<view class="content-wrap"> 1111</view>
 			</y-tab>
