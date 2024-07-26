@@ -250,7 +250,7 @@
 				{
 					"path": "collapsible-tabs",
 					"style": {
-						"navigationBarTitleText": "可收起标签页-防小红书标签栏(标签动态变化)",
+						"navigationBarTitleText": "可收起标签页-仿小红书标签栏(标签动态增删)",
 						"enablePullDownRefresh": false
 					}
 				},
