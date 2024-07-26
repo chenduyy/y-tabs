@@ -1,15 +1,33 @@
 4<template>
 	<view class="container">
 		<!-- <button size="mini" type="primary" style="margin: 10rpx;" @click="()={}">toPage</button> -->
-		<y-tabs ref="tabs" v-model="activeIndex" scroll-threshold="3" swipeable :ellipsis="false" barWidth="auto" direction="vertical">
+		<y-tabs ref="tabs" v-model="activeIndex">
 			<!-- <y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
 				:title="tab.title+(index==2?'哈哈哈哈哈哈哈哈哈哈哈哈哈哈':'')">
 				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
 			</y-tab> -->
-		<!-- 	<y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
+			<!-- <y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
 				:title="tab.title">
+				<template v-slot:title0>111</template>
+				<template #title0>
+					自定义标题
+				</template>
+				自定义标题
+				<template v-slot:title0>
+				    <view class="city">
+				    </view>
+				  </template>
 				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
 			</y-tab> -->
+			<template #customTitle>
+				自定义标题 
+			</template>
+			<y-tab class="y-tab-virtual" title="关注" titleSlot titleSlotName="customTitle">
+				<view class="content-wrap"> 1111</view>
+			</y-tab>
+			<y-tab class="y-tab-virtual" title="动态">
+				<view class="content-wrap"> 1111</view>
+			</y-tab>
 			<!-- <y-tab class="y-tab-virtual" title="1111111">
 				<view class="content-wrap"> 1111</view>
 			</y-tab>
@@ -31,7 +49,11 @@
 				activeIndex: 0,
 			};
 		},
-		methods: {}
+		methods: {
+			printSlot(slotProps){
+				console.log(slotProps.data);
+			}
+		}
 	};
 </script>
 

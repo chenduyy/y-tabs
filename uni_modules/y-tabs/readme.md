@@ -352,6 +352,8 @@
 	<tr><td>image-src</td>  <td>string</td>  <td>图片路径</td> <td>-</td></tr>
 	<tr><td>image-mode</td>  <td>string</td>  <td>图片裁剪、缩放的模式，为uniapp内置组件->媒体组件—>image下的mode属性的可选值</td> <td>-</td></tr>
 	<tr><td>position</td>  <td>string</td>  <td>在有图标或图片的情况下，标题围绕它们所在的位置，可选值：left、top、bottom</td> <td>right</td></tr>
+	<tr><td>title-slot</td>  <td>boolean</td>  <td>是否开启标题插槽（仅针对vue3版本的小程序端生效），为true则可以通过插槽自定义tab的标题</td> <td>false</td></tr>
+	<tr><td>title-slot-name</td>  <td>string</td>  <td>标题插槽的name值,可以设置该属性覆盖默认的标题插槽名称</td> <td>默认为'title'+y-tab的下标（比如第一个y-tab，它的默认插槽名称就是'title0'）</td></tr>
 </table>
 
 <div id="tabsEvents" ></div>
@@ -380,7 +382,7 @@
 	<tr><th style="width:140px;">名称</th><th>说明</th></tr>
 	<tr><td>nav-left</td>  <td>标题左侧内容</td></tr>
 	<tr><td>nav-right</td>  <td>标题右侧内容</td></tr>
-	<tr><td>title+下标</td>  <td>标签标题，插槽名默认为"title"+tab下标（注意：vue3中仅H5、app-vue有效，小程序端无效）</td></tr>
+	<tr><td>title+下标</td>  <td>标签标题，插槽名默认为"title"+tab下标，如果用户在y-tab上设置了titleSlotName，则插槽名为titleSlotName的值（注意：vue3中仅H5、app-vue有效，小程序端需在y-tab上设置titleSlot属性才会生效）</td></tr>
 	<tr><td>bar <font color="#1989fa" size="2">V2.0.1</font></td>  <td>滑块，可自定义滑块的内容(可以设置图片等)</td></tr>
 </table>
 	

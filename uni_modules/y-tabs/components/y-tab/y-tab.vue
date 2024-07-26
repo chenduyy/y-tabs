@@ -56,6 +56,7 @@
 			}, //图标大小
 			customPrefix: String, //自定义图标
 			imageSrc: String, //图片路径
+			//图片裁剪、缩放的模式，为uniapp内置组件->媒体组件—>image下的mode值
 			imageMode: {
 				type: String,
 				default: 'scaleToFill',
@@ -77,14 +78,25 @@
 						'bottom right'
 					].includes(value);
 				}
-			}, //图片裁剪、缩放的模式，为uniapp内置组件->媒体组件—>image下的mode值
+			},
+			//如果存在图片或图标，标题围绕它们的位置
 			position: {
 				type: String,
 				default: 'right',
 				validator(value) {
 					return ['top', 'bottom', 'left', 'right'].includes(value);
 				}
-			} //如果存在图片或图标，标题围绕它们的位置
+			},
+			// 是否开启标题插槽（仅针对vue3版本下的小程序端），为true则可以自定义标题（在vue3版本下，循环生成的具名动态插槽无法渲染后备内容）
+			titleSlot: {
+				type: Boolean,
+				default: false
+			},
+			// 标题插槽的name值，默认为'title'+y-tab的下标（比如第一个y-tab，它的默认插槽名称就是'title0'）
+			titleSlotName: {
+				type: String,
+				default: ""
+			}
 		},
 		data() {
 			return {
@@ -121,15 +133,10 @@
 			$props: {
 				deep: true,
 				// immediate: true,
-				handler(newValue, oldValue) {
-					// 更新tab
-					if (this.parent) {
-						this.parent.updateTab({
-							newValue: { ...newValue, badge: this.formatBadge() },
-							oldValue: oldValue && { ...oldValue },
-							index: this.index
-						});
-					}
+				handler(props) {
+					// 更新tab	
+					if (this.parent) this.parent.updateTab({ ...props }, this.index);
+
 				}
 			}
 		},
@@ -139,7 +146,7 @@
 		mounted() {
 			if (!this.parent) return;
 			if (this.parent.childrens.indexOf(this) === -1) this.parent.childrens.push(this);
-			this.parent.putTab({ newValue: { ...this.$props, key: this.unqieKey, badge: this.formatBadge() } });
+			this.parent.putTab({ ...this.$props, key: this.unqieKey });
 			this.scrollspy = this.parent.scrollspy; // 是否为滚动导航
 			this.rendered = !this.parent.isLazyRender || this.scrollspy; //标记是否渲染过，非懒加载与滚动导航模式下默认渲染
 		},
@@ -156,14 +163,6 @@
 		},
 		// #endif
 		methods: {
-			// 徽标格式化
-			formatBadge() {
-				if (!isNull(this.badge) && !isNull(this.badgeMaxCount) && this.badge > this.badgeMaxCount) {
-					return this.badgeMaxCount + '+';
-				} else {
-					return this.badge
-				}
-			},
 			// 获取查询节点信息的对象
 			getSelectorQuery() {
 				let query = null;

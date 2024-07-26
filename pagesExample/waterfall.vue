@@ -5,13 +5,6 @@
 			:wrap-style="{paddingBottom:'6px'}" @slide-change="slideChange" @slide-end="slideEnd">
 			<y-tab class="y-tab-virtual" title="关注" :title-style="titleStyle">
 				<view class="content-wrap">
-					<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" :scroll-y="!locked">
-						<goods-list :activeIndex="3" />
-					</scroll-view>
-				</view>
-			</y-tab>
-			<y-tab class="y-tab-virtual" title="动态" :title-style="titleStyle">
-				<view class="content-wrap">
 					<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" :scroll-y="!locked"
 						:refresher-enabled="!locked" :refresher-triggered="triggered" @refresherrefresh="onRefresh"
 						@refresherrestore="onRestore" @scrolltolower="loadMore()">
@@ -60,7 +53,14 @@
 						</uv-waterfall>
 						<!-- 加载更多 -->
 						<uni-load-more :status="status" />
-
+					
+					</scroll-view>
+				</view>
+			</y-tab>
+			<y-tab class="y-tab-virtual" title="动态" :title-style="titleStyle">
+				<view class="content-wrap">
+					<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" :scroll-y="!locked">
+						<goods-list :activeIndex="3" />
 					</scroll-view>
 				</view>
 			</y-tab>

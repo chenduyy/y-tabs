@@ -210,8 +210,8 @@ export {
 // 是否滑动切换的时候提供slide-change、slide-end事件，滑动过程中锁住scroll-view的上下滑动  ✔
 // swipe-threshold兼容bar-animate-mode为worm、worm-ease ✔
 // barWidth增加auto值，自适应标签宽度 ✔
+// vue3版本的小程序端支持通过插槽自定义标题 ✔
 
-// 提供slotTitle prop以供只渲染标签栏，而非内容区域，这样可以避开vue3下小程序端循环生成标签项的嵌套插槽无法自定义标签的问题（vue3下部分小程序对具名的作用域插槽支持度不好，暂不考虑）
 // 用户反映select-picker被遮挡：下拉区域使用absolute，被内容区域的overflow所裁剪，除非select组件使用fixed定位
 
 // 考虑支持nvue

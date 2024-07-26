@@ -71,7 +71,7 @@
         "versionName" : "1.0.0",
         "versionCode" : 1
     },
-    "vueVersion" : "2",
+    "vueVersion" : "3",
     "mp-qq" : {
         "appid" : "1112279617"
     }

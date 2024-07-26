@@ -52,7 +52,8 @@
 
 		<view class="title-wrap">
 			标签栏滚动
-			<view class="title-wrap__desc">标签数量超过滚动阈值（swipeThreshold）且总宽度超过标签栏宽度时，标签栏可以在水平方向上滚动，切换时会自动将当前标签居中(scrollToCenter="false"可取消居中)</view>
+			<view class="title-wrap__desc">
+				标签数量超过滚动阈值（swipeThreshold）且总宽度超过标签栏宽度时，标签栏可以在水平方向上滚动，切换时会自动将当前标签居中(scrollToCenter="false"可取消居中)</view>
 		</view>
 		<y-tabs v-model="activeIndex4">
 			<y-tab class="y-tab-virtual" v-for="tab in scrollTabs" :key="tab.key" :title="tab.title">
@@ -67,7 +68,8 @@
 			</view>
 		</view>
 		<y-tabs v-model="activeIndex5">
-			<y-tab class="y-tab-virtual" v-for="tab in  tabs" :key="tab.key" :title="'超长的文本标签'+tab.key">
+			<y-tab class="y-tab-virtual" v-for="(tab,index) in  tabs" :key="tab.key"
+				:title="(index>1?'标题':'超长的文本标签')+tab.key">
 				<view class="content-wrap">内容{{tab.key}}</view>
 			</y-tab>
 		</y-tabs>
@@ -153,7 +155,7 @@
 						text: '线性按钮'
 					}
 				],
-				imgUrl: this.$imgUrl + `goods/goods12.png`,
+				imgUrl: `${this.$imgUrl}tea/hot.png`,
 			}
 		},
 		methods: {

@@ -33,41 +33,40 @@
 							</view>
 							<!-- 标签文本 -->
 							<view class="y-tab__text" :class="[textClass(tab)]">
-								<!-- 
-									统一改为具名的作用域插槽（暂时不做）:
-										1.避开vue3中小程序端循环生成动态插槽名的插槽时后备内容不显示
-										2.在小程序使用template会被编译成view,导致y-tab__text样式无效,标签栏未超过滚动数量时超出隐藏也同样失效,H5和APP不会
-										3.验证QQ/微信/支付宝/百度/飞书/快手；vue2中快手 、vue3中百度/飞书/快手小程序有异常；无法验证京东、字节、快应用
-										4.微信报： 
-											a.[Component] generic "wx-scoped-slots-title" is not instantiated. The default component is used instead.
-										    b.[Component] More than one slot named "title" are found inside a single component instance (in component "uni_modules/y-tabs/components/y-tabs/y-tabs"). The first one was accepted.
-								-->
-								<!-- 	<slot name="title" :index="index">
-									{{ tab.title }}
-								</slot> -->
-								<!-- <template #title="{index}">
-									自定义{{index}}
-								</template> -->
 
-								<!-- 快应用联盟不支持动态插槽名 -->
-								<!-- #ifndef VUE3 -->
-								<!-- #ifndef QUICKAPP-WEBVIEW-UNION -->
-								<slot :name="tab.titleSlot">{{ tab.title }}</slot>
-								<!-- #endif -->
+								<!--快应用联盟不支持动态的具名插槽 -->
 								<!-- #ifdef QUICKAPP-WEBVIEW-UNION -->
 								{{ tab.title }}
 								<!-- #endif -->
+
+
+								<!-- 非快应用联盟：app、h5、小程序端 -->
+								<!-- #ifndef QUICKAPP-WEBVIEW-UNION -->
+
+								<!-- vue2：支持循环生成的具名插槽渲染后备内容 -->
+								<!-- #ifndef VUE3 -->
+								<slot :name="tab.titleSlotName">{{ tab.title }}</slot>
 								<!-- #endif -->
 
-								<!-- vue3,小程序端循环生成动态插槽名插槽时后备内容不显示，只支持H5、APP -->
+								<!-- vue3： 仅app、h5支持循环生成的具名插槽渲染后备内容，小程序端需通过titleSlot属性处理-->
 								<!-- #ifdef VUE3 -->
-								<!-- #ifndef APP-PLUS || H5 -->
-								{{ tab.title }}
-								<!-- #endif -->
+
 								<!-- #ifdef APP-PLUS || H5 -->
-								<slot :name="tab.titleSlot">{{ tab.title }}</slot>
+								<slot :name="tab.titleSlotName">{{ tab.title }}</slot>
 								<!-- #endif -->
+
+								<!-- 小程序端：如果用户开启了titleSlot属性，表示自定义标题，否则直接显示传入的title值 -->
+								<!-- #ifndef APP-PLUS || H5 -->
+								<template v-if="tab.titleSlot">
+									<slot :name="tab.titleSlotName"  />
+								</template>
+								<template v-else> {{ tab.title }}</template>
 								<!-- #endif -->
+
+								<!-- #endif -->
+
+								<!-- #endif -->
+
 
 							</view>
 						</view>
@@ -76,7 +75,7 @@
 							<!-- 提示小红点 -->
 							<text class="y-tab__info--dot" v-if="tab.dot" />
 							<!-- 徽标 -->
-							<text class="y-tab__info--badge" v-if="tab.badge">{{ tab.badge }}</text>
+							<text class="y-tab__info--badge" v-if="tab.badge">{{formatBadge(tab) }}</text>
 						</view>
 					</view>
 					<!-- 滑块: 仅支持line、button、line-button ，可使用插槽自定义-->
@@ -97,8 +96,8 @@
 		<view class="y-tabs__placeholder" :style="[placeholderStyle]" />
 
 		<!-- 标签内容 -->
-		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchStart" @touchmove="touchMove"
-			@touchend="touchEnd">
+		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchStart"
+			@touchmove="touchMove" @touchend="touchEnd">
 			<view class="y-tabs__track" :class="[{ 'is-scrollspy': scrollspy }]" :style="[trackStyle]">
 				<!-- 滚动导航与侧边栏导航的内容区域：使用scroll-view实现区域滚动，否则就是页面级滚动 -->
 				<scroll-view v-if="scrollspy && !pageScroll" class="y-tabs__content-scrollview" scroll-y
@@ -611,10 +610,15 @@
 				});
 			},
 			// 添加tab
-			putTab({ newValue, oldValue }) {
+			putTab(props) {
+				const defaultSlotName = 'title' + this.tabs.length //标题的默认插槽名
 				this.tabs.push({
-					...newValue,
-					titleSlot: 'title' + this.tabs.length, //标签插槽名，以"title"+下标命名,vue3只有H5、app支持自定义标签插槽
+					...props,
+					// titleSlot: 'title' + this.tabs.length,
+					//标题插槽名，默认以"title"+下标命名，如果用户设置了titleSlotName，就使用titleSlotName
+					//,vue3只有H5、app支持自定义标签插槽
+					defaultSlotName, //标题的默认插槽名
+					titleSlotName: this.getTitleSlotName(defaultSlotName, props?.titleSlotName), //标题的实际插槽名
 					show: this.scrollspy //是否显示内容（滚动导航模式默认显示）
 				});
 				this.$nextTick(() => {
@@ -624,9 +628,15 @@
 
 			},
 			// 更新tab
-			updateTab({ newValue, oldValue, index }) {
+			updateTab(props, index) {
 				const tab = this.tabs[index];
-				Object.entries(newValue || {}).forEach(ele => this.$set(tab, ele[0], ele[1]));
+				Object.entries(props || {}).forEach(ele => this.$set(tab, ele[0], ele[1]));
+				this.$set(tab, "titleSlotName", this.getTitleSlotName(tab.defaultSlotName, props?.titleSlotName))
+			},
+			// 获取标题插槽名
+			getTitleSlotName(defaultSlotName, titleSlotName) {
+				// 如果用户设置了titleSlotName，就使用titleSlotName，否则使用默认的插槽名称（以"title"+下标命名）
+				return !isNull(titleSlotName) ? titleSlotName : defaultSlotName
 			},
 			// 标签项class
 			tabClass(index, tab) {
@@ -688,6 +698,14 @@
 					borderColor: activated ? borderColor : ''
 				};
 				return style;
+			},
+			// 徽标格式化
+			formatBadge(tab) {
+				if (!isNull(tab?.badge) && !isNull(tab?.badgeMaxCount) && tab?.badge > tab?.badgeMaxCount) {
+					return tab?.badgeMaxCount + '+';
+				} else {
+					return tab?.badge
+				}
 			},
 			// 初始化操作
 			async init(callback) {

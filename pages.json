@@ -325,7 +325,7 @@
 				"pagePath": "pages/tabBar/my",
 				"iconPath": "static/image/tabBar/my.png",
 				"selectedIconPath": "static/image/tabBar/my-active.png",
-				"text": "我的"
+				"text": "test"
 			}
 		]
 	},
