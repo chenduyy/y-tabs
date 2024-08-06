@@ -6,8 +6,17 @@
 
 const options = {
 	styleIsolation: 'shared',
-	virtualHost: true // [微信小程序、支付宝小程序（默认值为 true）] 将自定义节点设置成虚拟的，更加接近Vue组件的表现。我们不希望自定义组件的这个节点本身可以设置样式、响应 flex 布局等，而是希望自定义组件内部的第一层节点能够响应 flex 布局或者样式由自定义组件本身完全决定
-	// 微信（可以使用virtualHost配置）/QQ/百度/字节跳动这四家小程序，自定义组件在渲染时会比App/H5端多一级节点，导致flex无效，是否考虑在组件上增加class控制
+	// 将自定义节点设置成虚拟的，更加接近Vue组件的表现。我们不希望自定义组件的这个节点本身可以设置样式、响应 flex 布局等，
+	// 而是希望自定义组件内部的第一层节点能够响应 flex 布局或者样式由自定义组件本身完全决定，启用后可以通过 mergeVirtualHostAttributes 
+	// 合并合并组件虚拟节点外层属性
+	// 平台兼容性：微信小程序、支付宝小程序（默认值为 true）、抖音小程序（4.02+）
+
+	// 抖音小程序不需要设置为true，否则自定义组件显示有问题
+	// #ifdef MP-ALIPAY | MP-WEIXIN
+	virtualHost: true
+	// #endif
+	// 微信（可以使用virtualHost配置）/QQ/百度/字节跳动这四家小程序，自定义组件在渲染时会比App/H5端多一级节点，导致flex无效，在组件上增加class控制
+	// 支付宝小程序默认启用了virtualHost配置不会插入节点
 }
 
 
