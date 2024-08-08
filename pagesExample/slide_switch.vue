@@ -3,7 +3,7 @@
 		<y-tabs v-model="activeIndex" :background="'#fff'" swipeable :offsetTop="offsetTop" @slide-change="slideChange" @slide-end="slideEnd">
 			<y-tab class="y-tab-virtual" v-for="(title, index) in tabs" :title="title" :key="index">
 				<!-- 内容页滑动时锁住scroll-view的竖向滚动 -->
-				<scroll-view class="scroll-wrap" :scroll-y="!locked && activeIndex===index?false:true"><goods-list :activeIndex="index" /></scroll-view>
+				<scroll-view class="scroll-wrap" :scroll-y="!locked && activeIndex===index?true:false"><goods-list :activeIndex="index" /></scroll-view>
 			</y-tab>
 		</y-tabs>
 	</view>

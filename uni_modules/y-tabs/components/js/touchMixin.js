@@ -14,7 +14,8 @@ export const touchMixin = function() {
 					deltaY: 0,
 					startTimestamp: 0,
 					nestedSwipeable: true, //对于嵌套的上级tabs，是否允许水平滑动（下级tabs滑动边界时才允许上级tabs滑动）
-				}
+				},
+				windowWidth: 414, //可使用窗口宽度
 			};
 		},
 		computed: {
@@ -24,7 +25,12 @@ export const touchMixin = function() {
 			}
 		},
 		created() {
+
 			this.nestedTabs = this.getNestedTabs();
+
+			// 获取可使用窗口宽度
+			this.windowWidth = uni.getSystemInfoSync()?.windowWidth || 414;
+
 		},
 		methods: {
 			//获取嵌套的上级tabs实例
@@ -50,10 +56,19 @@ export const touchMixin = function() {
 			touchMove(event) {
 				if (!this.horizontalSwipe) return;
 				const touch = event.touches[0];
-				this.tonchOpt.deltaX = touch.clientX < 0 ? 0 : this.tonchOpt.startX - touch.clientX;
+				// fix: ‘touch.clientX < 0’ 返回0时会导致用户划出屏幕边界后横向滑动位置一直是0，使底部条动画计算错误
+				// this.tonchOpt.deltaX = touch.clientX < 0 ? 0 : this.tonchOpt.startX - touch.clientX;
+				// this.tonchOpt.deltaX = this.tonchOpt.startX - touch.clientX;
+
+				// 避免左右滑动超出屏幕
+				const clientX = touch.clientX < 0 ? 0 : touch.clientX > this.windowWidth ? this.windowWidth :
+					touch.clientX;
+				this.tonchOpt.deltaX = this.tonchOpt.startX - clientX;
 				this.tonchOpt.deltaY = this.tonchOpt.startY - touch.clientY;
+
 				const offsetX = Math.abs(this.tonchOpt.deltaX);
 				const offsetY = Math.abs(this.tonchOpt.deltaY);
+
 				// 当距离大于某个值时锁定方向
 				if (!this.tonchOpt.direction || (offsetX < 10 && offsetY < 10)) {
 					this.tonchOpt.direction = getDirection(offsetX, offsetY);

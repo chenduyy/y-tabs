@@ -1,7 +1,7 @@
 4<template>
 	<view class="container">
 		<!-- <button size="mini" type="primary" style="margin: 10rpx;" @click="()={}">toPage</button> -->
-		<y-tabs ref="tabs" v-model="activeIndex">
+		<y-tabs ref="tabs" v-model="activeIndex" swipeable>
 			<!-- <y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
 				:title="tab.title+(index==2?'哈哈哈哈哈哈哈哈哈哈哈哈哈哈':'')">
 				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
@@ -45,7 +45,7 @@
 	export default {
 		data() {
 			return {
-				tabs: this.$getTabs(5),
+				tabs: this.$getTabs(2),
 				activeIndex: 0,
 			};
 		},

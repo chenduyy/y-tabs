@@ -58,7 +58,7 @@
 								<!-- 小程序端：如果用户开启了titleSlot属性，表示自定义标题，否则直接显示传入的title值 -->
 								<!-- #ifndef APP-PLUS || H5 -->
 								<template v-if="tab.titleSlot">
-									<slot :name="tab.titleSlotName"  />
+									<slot :name="tab.titleSlotName" />
 								</template>
 								<template v-else> {{ tab.title }}</template>
 								<!-- #endif -->
@@ -96,8 +96,8 @@
 		<view class="y-tabs__placeholder" :style="[placeholderStyle]" />
 
 		<!-- 标签内容 -->
-		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchStart"
-			@touchmove="touchMove" @touchend="touchEnd">
+		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchStart" @touchmove="touchMove"
+			@touchend="touchEnd">
 			<view class="y-tabs__track" :class="[{ 'is-scrollspy': scrollspy }]" :style="[trackStyle]">
 				<!-- 滚动导航与侧边栏导航的内容区域：使用scroll-view实现区域滚动，否则就是页面级滚动 -->
 				<scroll-view v-if="scrollspy && !pageScroll" class="y-tabs__content-scrollview" scroll-y
@@ -794,6 +794,8 @@
 			async observerTransparent() {
 				if (!this.transparent) return;
 
+				// bug: 点击标签快速滚动时，不会触发监听，标签栏仍旧是透明的
+
 				// 通过observer模拟出滚动效果，得到预设阈值触发时的相交高度从而计算出透明度
 				// 1.通过bottom将参照节点布局区域高度设置为 目标节点区域到屏幕顶部的高度
 				// 2.指定目标节点的高度为transparentOffset的值,页面滚动时目标节点与参照节点就有有一个最大为transparentOffset的相交高度
@@ -806,7 +808,7 @@
 				const length = 30; //预设阈值数量为30个
 				const increment = (1 / transOffset) * Math.floor(transOffset / length); //增量
 				const thresholds = Array.from({ length: length + 1 }, (_, i) => {
-					let value = (i * increment).toFixed(3);
+					let value = Number((i * increment).toFixed(3));
 					//避免阈值范围超过0-1
 					if (value > 1) value = 1;
 					if (value < 0) value = 0;
@@ -961,8 +963,15 @@
 				scrollTop += Math.random() * 0.1 //加一个随机数（避免当重复设置某些属性为相同的值时，不会同步到view层）
 
 				// 页面滚动使用自己设定的动画时长，区域滚动时使用scroll-view设置的动画效果,大概300ms
-				if (this.pageScroll) uni.pageScrollTo({ scrollTop, duration: immediate ? 0 : this.msDuration })
-				else this.paneScrollTop = scrollTop;
+				if (this.pageScroll) {
+					const duration = immediate ? 0 : this.msDuration
+					uni.pageScrollTo({ scrollTop, duration })
+
+					//处理因调用uni.pageScrollTo使页面快速滚动而无法触发透明标签栏的observe监听
+					this.handleTransparentColor(duration)
+				} else {
+					this.paneScrollTop = scrollTop;
+				}
 
 				this.unLockedPane(scrollTop); // 释放pane滚动锁
 			},
@@ -988,6 +997,22 @@
 						clear();
 					}
 				}, "paneLockedTimer", ms)
+			},
+			// 处理因调用uni.pageScrollTo使页面快速滚动而无法触发透明标签栏的observe监听
+			handleTransparentColor(ms = 0) {
+				ms = ms + 50;
+				this.intervalFn(async (clear) => {
+					const rect = await this.getScrollViewRect();
+					if (ms > 0 && rect?.scrollTop <= this.transparentOffset) {
+						ms -= 50
+						let opacity = Math.min(rect?.scrollTop || 0, this.transparentOffset) * 0.01;
+						const { A, R, G, B } = this.rgba || {};
+						opacity = Math.min(Math.max(A, opacity), 1);
+						this.transparentBgColor = `rgba(${R},${G},${B},${opacity})`;
+					} else {
+						clear()
+					}
+				}, "transparentColorTimer", 50)
 			},
 			// 设置内容区域滚动时激活的下标
 			setActivedIndexToScroll() {
