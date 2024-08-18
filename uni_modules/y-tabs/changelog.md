@@ -1,3 +1,12 @@
+## 3.0.4（2024-08-18）
++ 【修复】在app上动态添加tab时，由于组件执行顺序的问题会导致内部逻辑错误
++ 【修复】在快手小程序端，具名插槽包含'-'则不会渲染插槽内容，因此将nav-left、nav-right改为navLeft、navRight
++ 【修复】在快手小程序端，因使用uni.createSelectorQuery().in(this).selectViewport()导致获取的显示区域的scrollTop为0造成的bug
++ 【优化】组件之前对于标签栏吸顶采用的是js方案，目前已调整为：通过多种方式判断当前运行环境是否支持css sticky，如果支持则使用CSS方案，否则使用降级的JS方案
++ 【新增】y-tabs新增title-active-style、title-inactive-style属性，用于设置标题项在选中和默认时的样式
++ 【新增】y-tabs新增close-css-sticky属性。由于css sticky的特殊性，特提供该属性关闭css sticky方案对吸顶的实现，使用降级的js方案。
+
+
 ## 3.0.3（2024-08-08）
 + 【修复】左右滑动超出屏幕边界时底部条错位
 + 【修复】使用uni.pageScrollTo进行页面滚动时transparent不生效

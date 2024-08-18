@@ -14,7 +14,7 @@
 						:titleStyle="{ fontSize: '24rpx' }" :titleClass="tab.titleClass || ''">
 						<div class="content-wrap">
 							<view class="title-wrap">{{ tab.title }}</view>
-							<tea-list :activeIndex="index" />
+							<tea-list :activeKey="index" />
 						</div>
 					</y-tab>
 				</y-tabs>

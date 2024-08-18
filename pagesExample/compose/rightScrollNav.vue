@@ -13,7 +13,7 @@
 			</y-tab>
 
 			<!-- 标签栏右侧内容 -->
-			<template #nav-right>
+			<template #navRight>
 				<view class="nav-right-wrap" @click.stop="showPopup">
 					<uni-icons class="nav-right-wrap__icon" type="bottom" :color="'#5e6d82'" size="14" />
 				</view>

@@ -4,10 +4,11 @@
 			自定义标题
 			<view class="title-wrap__desc">1、如果我们要自定义标题，可使用插槽的形式。</view>
 			<view class="title-wrap__desc">
-				2、标题插槽名默认为'title'+y-tab的下标（比如第一个y-tab，它的默认插槽名称就是'title0'）。也可以在y-tab上传入titleSlotName属性来设置标题插槽的name值</view>
+				2、标题插槽名默认为'title'+y-tab的下标（比如第一个y-tab，它的默认插槽名称就是'title0'）。也可以在y-tab上传入titleSlotName属性来设置标题插槽的name值
+			</view>
 			<view class="title-wrap__desc">3、需要注意的是，在vue3版本的小程序端中自定义标题插槽无效，给y-tab设置titleSlot属性就可解决该问题</view>
 		</view>
-		<y-tabs v-model="activeIndex">
+		<y-tabs v-model="activeIndex2">
 			<template #title0>
 				自定义标题
 			</template>
@@ -27,14 +28,11 @@
 
 		<view class="title-wrap">
 			自定义标签栏左侧、右侧内容
-			<view class="title-wrap__desc">通过插槽nav-left、nav-right自定义</view>
+			<view class="title-wrap__desc">通过插槽navLeft、navRight自定义</view>
 		</view>
 		<y-tabs v-model="activeIndex">
 			<!-- 标签栏右侧内容 -->
-			<template #nav-left>
-				<uni-icons type="back" size="20" />
-			</template>
-			<template #nav-right>
+			<template #navRight>
 				<uni-icons type="bars" size="20" />
 			</template>
 			<y-tab class="y-tab-virtual" v-for="item in tabs" :key="item.key" :title="item.title">
@@ -69,6 +67,7 @@
 			return {
 				tabs: this.$getTabs(),
 				activeIndex: 0,
+				activeIndex2: 0,
 				barBg,
 			}
 		},

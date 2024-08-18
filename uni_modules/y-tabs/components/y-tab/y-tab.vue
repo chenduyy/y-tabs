@@ -1,6 +1,6 @@
 <template>
 	<view class="y-tab__pane" :data-index="index" :class="[uniquePaneClass,paneClass]" :style="[paneStyle]">
-		<!-- 渲染过的则不再渲染，未渲染的根据激活状态进行渲染 -->
+		<!-- 渲染过的则不再渲染，未渲染的根据激活状态active进行渲染 -->
 		<view class="y-tab__pane--wrap" v-if="rendered ? true : active">
 			<slot />
 		</view>
@@ -27,7 +27,7 @@
 	 * @property {String}			position	             在有图标或图片的情况下，标题围绕它们所在的位置，默认right。可选值：left、top、bottom
 	 */
 
-	import { isNull, toClass, getUid } from '../js/uitls';
+	import { isNull, toClass, getUid, deepClone } from '../js/uitls';
 	import { options } from '../js/const';
 
 	export default {
@@ -129,26 +129,23 @@
 				return toClass({ 'is-active': this.active, 'is-scrollspy': this.scrollspy });
 			},
 		},
-		watch: {
-			$props: {
-				deep: true,
-				// immediate: true,
-				handler(props) {
-					// 更新tab	
-					if (this.parent) this.parent.updateTab({ ...props }, this.index);
-
-				}
-			}
-		},
 		created() {
 			this.parent = this.getParent();
 		},
 		mounted() {
 			if (!this.parent) return;
 			if (this.parent.childrens.indexOf(this) === -1) this.parent.childrens.push(this);
-			this.parent.putTab({ ...this.$props, key: this.unqieKey });
+			this.parent.putTab({ ...deepClone(this.$props || {}), key: this.unqieKey });
 			this.scrollspy = this.parent.scrollspy; // 是否为滚动导航
 			this.rendered = !this.parent.isLazyRender || this.scrollspy; //标记是否渲染过，非懒加载与滚动导航模式下默认渲染
+
+			// 动态watch props，避免动态添加tab时可能会先触发watch中对$props的监听执行updateTab，后触发mounted中的putTab
+			this.$watch(() => this.$props, {
+				deep: true,
+				handler(props) {
+					if (this.parent && props) this.parent.updateTab({ ...props }, this.index); // 更新tab	
+				}
+			})
 		},
 		// #ifndef VUE3
 		destroyed() {
@@ -228,11 +225,13 @@
 					// console.log('res:', this.title, res);
 					if (!this.isActiveLast) {
 						// 如果目标节点布局区域的top小于参照节点的top,则说明目标节点在参照节点布局区域之上，intersectionRatio不大于0则说明两者不相交
-						this.isDisjoint = res.intersectionRatio <= 0 && res.boundingClientRect.top < res
+						this.isDisjoint = res.intersectionRatio <= 0 && res.boundingClientRect.top <
+							res
 							.relativeRect.top;
 					} else {
-						// 滚动导航模式下，最后一个pane完成显示但未超出可视范围顶部时，是否设置相离而激活最后一个标签项
-						this.isDisjoint = res.intersectionRatio > 0 && res.boundingClientRect.bottom <= res
+						// 滚动导航模式下，最后一个pane完全显示但未超出参照范围顶部时，是否设置相离而激活最后一个标签项
+						this.isDisjoint = res.intersectionRatio > 0 && res.boundingClientRect.bottom <=
+							res
 							.relativeRect.bottom;
 					}
 

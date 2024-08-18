@@ -4,7 +4,7 @@
 			滑块设置
 			<view class="title-wrap__desc">bar-width：设置滑块宽度</view>
 			<view class="title-wrap__desc">bar-height：设置滑块高度</view>
-			<view class="title-wrap__desc">默认单位为px, 支持数字、rpx、vh、vw等单位及calc() 函数。 </view>
+			<view class="title-wrap__desc">默认单位为px, 支持数字、rpx、vh、vw等单位及calc() 函数，也可传入'auto'值。 </view>
 			<view class="title-wrap__desc">仅支持type为line、button、line-button。</view>
 			<view class="title-wrap__desc">bar-style：设置滑块样式，优先级低于bar-width、bar-height</view>
 		</view>
@@ -18,6 +18,16 @@
 		</view>
 		<y-tabs v-model="activeIndex" color="#ee0a24" bar-width="24" bar-height="4">
 			<y-tab class="y-tab-virtual" v-for="item in tabs" :key="item.key" :title="item.title">
+				<view class="content-wrap"> 内容{{item.key}} </view>
+			</y-tab>
+		</y-tabs>
+
+		<view class="title-wrap">
+			设置bar-width为auto，让底部条自适应标签宽度
+		</view>
+		<y-tabs v-model="activeIndex" color="#ee0a24" bar-width="auto" :ellipsis="false">
+			<y-tab class="y-tab-virtual" v-for="item in tabs" :key="item.key"
+				:title="item.key==2?'我是超长文本标签':item.title">
 				<view class="content-wrap"> 内容{{item.key}} </view>
 			</y-tab>
 		</y-tabs>

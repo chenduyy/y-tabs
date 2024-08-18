@@ -3,14 +3,13 @@
 		<!-- <view class="gray-wrap"></view> -->
 		<!-- 左侧导航区域：使用侧边栏导航+固定定位固定在左侧 -->
 		<view class="left-wrap">
-			<left-nav ref="leftNavRef" @change="onChange" @changeNextTitle="(value)=> nextTitle = value" />
+			<left-nav ref="leftNavRef" @change="onChange" @changeNextTitle="value=> (nextTitle = value)" />
 		</view>
 		<!-- 右侧内容区域：使用页面级滚动的滚动导航-->
 		<view class="right-wrap">
 			<y-pull-loading v-model="isLoading" :pullDistance="100" :disabled="pullDisabled" @refresh="onRefresh">
-				<!-- 右侧导航 -->
+				<!-- 右侧滚动导航 -->
 				<right-scroll-nav ref="rightScrollNav" />
-
 
 				<!-- 自定义上拉提示 -->
 				<template #pulling>
@@ -70,7 +69,7 @@
 		methods: {
 			// 左侧导航点击事件
 			onChange(index, title) {
-				this.$refs.rightScrollNav.changeData(index, title)
+				this.$refs?.rightScrollNav?.changeData(index, title)
 			},
 			onRefresh() {
 				setTimeout(() => {
@@ -91,7 +90,6 @@
 		flex-wrap: nowrap;
 		flex-direction: row;
 		justify-content: flex-end;
-		overflow: hidden;
 
 		// 左侧导航区域
 		.left-wrap {
@@ -193,11 +191,11 @@
 		&__wrap {
 			// padding-left: 8px;
 
-			&.is-fixed {
-				width: calc(100vw - 110px);
-				right: 0;
-				left: 110px !important;
-			}
+			// &.is-fixed {
+			// 	width: calc(100vw - 110px);
+			// 	right: 0;
+			// 	left: 110px !important;
+			// }
 		}
 
 		// 标签栏滚动容器

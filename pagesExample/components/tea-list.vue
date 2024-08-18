@@ -12,7 +12,9 @@
 						</view>
 						<view class="price-wrap">
 							<text>￥{{item.price}}</text>
-							<text class="iconfont icon-tianjia" />
+							<view class="add-icons">
+								<uni-icons type="plusempty" size="10" color="#fff" />
+							</view>
 						</view>
 					</view>
 				</view>
@@ -37,7 +39,7 @@
 		},
 		props: {
 			// 当前选中内容区域的下标
-			activeIndex: {
+			activeKey: {
 				type: Number,
 				default: 0
 			}
@@ -47,7 +49,7 @@
 		},
 		computed: {
 			dataList() {
-				return this.dataSource[this.activeIndex]
+				return this.dataSource[this.activeKey]
 			},
 			isEmpty() {
 				return !this.dataList || this.dataList.length == 0
@@ -202,7 +204,6 @@
 				})
 			},
 		},
-		mounted() {},
 		methods: {
 			isNull
 		}
@@ -278,7 +279,7 @@
 				}
 
 				// 添加图标
-				.iconfont {
+				.add-icons {
 					font-size: 22rpx;
 					height: 36rpx;
 					width: 36rpx;

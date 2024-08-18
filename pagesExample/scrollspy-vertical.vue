@@ -17,20 +17,19 @@
 			侧边栏导航（页面级滚动）-仿奶茶点单：
 				1.标签栏使用的scroll-view实现的局部滚动,但是非吸顶状态，不给定高度的话，是完全撑开的，无法滚动，吸顶时，使用了fixed的top、buttom后有了高度
 				2.内容区域垂直铺开展示，跟随页面滚动;
-				3.在这种模式下，可以给定一个sticky，在内容区域滚动时使侧边导航进行吸顶固定，需开启sticky属性
+				3.在这种模式下，可以设置sticky属性，在内容区域滚动时使侧边导航进行吸顶固定
 				4.在H5端，由于有顶部导航栏的存在，需要设置一下offsetTop,让吸顶的导航栏减去这部分高度
 		 
 		 -->
 
-		<!--  :wrapStyle="wrapStyle" @sticky-change="stickyChange" -->
 		<y-tabs ref="yTabs" v-model="activeIndex" background="#f7f7f7" color="#0050c8" bar-height="64" scrollspy
-			direction="vertical" sticky :offsetTop="offsetTop">
+			direction="vertical" sticky :offsetTop="offsetTop" :barStyle="barStyle">
 			<y-tab v-for="(tab, index) in tabs" :title="tab.title" :key="index" :position="tab.position || 'right'"
-				:imageSrc="tab.imageSrc || ''" :titleStyle="{ fontSize: '24rpx' }" :titleClass="tab.titleClass || ''">
+				:imageSrc="tab.imageSrc || ''" :titleStyle="titleStyle" :titleClass="tab.titleClass || ''">
 				<div class="content-wrap">
 					<banner v-if="index === 0" />
 					<view class="title-wrap">{{ tab.title }}</view>
-					<tea-list :activeIndex="index" />
+					<tea-list :activeKey="index" />
 				</div>
 			</y-tab>
 		</y-tabs>
@@ -52,6 +51,9 @@
 		data() {
 			return {
 				activeIndex: 0, // 标签页当前选择项的下标
+				// 尽量避免在属性赋值时中使用对象字面量，否则会导致y-tab中的$props监听一直触发
+				titleStyle: { fontSize: '24rpx' },
+				barStyle: { left: 0, borderRadius: 0 }, // 滑块样式
 				tabs: [{
 						title: '新品推荐',
 						imageSrc: `${this.$imgUrl}tea/hot2.png`,
@@ -80,18 +82,7 @@
 					{ title: '类目10', imageSrc: '' }
 				],
 				offsetTop: 0, //粘性布局下导航栏与顶部的最小距离
-				// isFixed: false,
-				// infoHeight: 97, //顶部信息区域高度
 			};
-		},
-		computed: {
-			// 标签栏样式
-			// wrapStyle() {
-			// 	// 吸顶和不吸顶时的高度
-			// 	return {
-			// 		height: this.isFixed ? "100%" : `calc(100vh - ${this.offsetTop}px - ${this.infoHeight}px)`
-			// 	}
-			// }
 		},
 		created() {
 			// H5端导航栏高度为44px，吸顶时需要减去该高度
@@ -99,18 +90,6 @@
 			this.offsetTop = 44;
 			// #endif
 		},
-		mounted() {
-			// this.$nextTick(async () => {
-			// 	const rect = await getRect('.info-panel', this)
-			// 	this.infoHeight = rect?.height;
-			// })
-		},
-		methods: {
-			// 吸顶时触发
-			// stickyChange({ isFixed }) {
-			// 	this.isFixed = isFixed
-			// }
-		}
 	};
 </script>
 
@@ -161,14 +140,6 @@
 			padding-left: 24rpx;
 
 			.title-wrap {
-				position: sticky;
-				/* #ifdef H5 */
-				top: 44px;
-				/* #endif */
-				/* #ifndef H5 */
-				top: 0;
-				/* #endif */
-				z-index: 1;
 				background: #fff;
 				font-size: 24rpx;
 				font-weight: 520;
@@ -188,22 +159,12 @@
 
 	::v-deep .y-tabs {
 
-		// 滑块
-		&__bar.is-vertical.is-line {
-			left: 0 !important;
-		}
-
-		// 滑块内容
-		&__bar-inner {
-			border-radius: 0 !important;
-		}
-
 		.y-tabs__nav {
 			background: #fff;
 		}
 
 		.y-tab {
-			height: 64px;
+			height: 64px !important;
 			background-color: #f7f7f7;
 
 			&.first-tab {

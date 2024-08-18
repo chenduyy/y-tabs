@@ -1,9 +1,10 @@
 <template>
 	<view class="page-container">
-		<y-tabs v-model="activeIndex" :background="'#fff'" swipeable :offsetTop="offsetTop" @slide-change="slideChange" @slide-end="slideEnd">
+		<y-tabs v-model="activeIndex" :background="'#fff'" swipeable :offsetTop="offsetTop" @slide-change="slideChange"
+			@slide-end="slideEnd">
 			<y-tab class="y-tab-virtual" v-for="(title, index) in tabs" :title="title" :key="index">
 				<!-- 内容页滑动时锁住scroll-view的竖向滚动 -->
-				<scroll-view class="scroll-wrap" :scroll-y="!locked && activeIndex===index?true:false"><goods-list :activeIndex="index" /></scroll-view>
+				<scroll-view class="scroll-wrap" :scroll-y="scrollY"><goods-list :activeIndex="index" /></scroll-view>
 			</y-tab>
 		</y-tabs>
 	</view>
@@ -24,22 +25,22 @@
 				tabs: ['618返场', '颜值水杯', '家居日用', '冲调零食'],
 				activeIndex: 0, // 标签页当前选择项的下标
 				offsetTop: 0, //粘性定位布局下与顶部的最小距离
-				locked: false 
+				scrollY: true, //是否开启scroll-view的上下滑动，内容页左右滑动时不开启
 			};
 		},
 		created() {
 			// #ifdef H5
-			this.offsetTop = 43;
+			this.offsetTop = 44;
 			// #endif
 		},
-		methods:{
+		methods: {
 			// 内容滑动中触发
 			slideChange() {
-				this.locked = true
+				this.scrollY = false
 			},
 			// 内容页滑动结束时触发
-			slideEnd(){
-				this.locked = false
+			slideEnd() {
+				this.scrollY = true
 			}
 		}
 	};

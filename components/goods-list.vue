@@ -382,7 +382,6 @@
 				]
 			}
 		},
-		mounted() {},
 		methods: {
 			isNull,
 		}

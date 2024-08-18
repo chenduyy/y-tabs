@@ -9,8 +9,8 @@
 }
 /* #endif */
 
-/* QQ/百度/字节跳动/飞书/快手小程序，自定义组件在渲染时会比App/H5端多一级节点，导致标签内容使用的flex失效，需在组件上增加如下class */
-/* #ifdef MP-QQ || MP-BAIDU || MP-TOUTIAO || MP-LARK || MP-KUAISHOU */
+/* QQ/百度/字节跳动/飞书/快手/京东小程序，自定义组件在渲染时会比App/H5端多一级节点，导致标签内容使用的flex失效，需在组件上增加如下class */
+/* #ifdef MP-QQ || MP-BAIDU || MP-TOUTIAO || MP-LARK || MP-KUAISHOU || MP-JD */
 .y-tab-virtual {
 	position: relative;
 	flex-shrink: 0;
@@ -37,6 +37,10 @@
 			color: rgba(69, 90, 100, 0.6);
 			font-size: 24rpx;
 			line-height: 40rpx;
+		}
+		
+		&__desc:nth-child(1) {
+			padding-top: 12rpx;
 		}
 	}
 

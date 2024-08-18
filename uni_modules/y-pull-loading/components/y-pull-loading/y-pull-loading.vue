@@ -63,10 +63,12 @@
 	export default {
 		name: "y-pull-loading",
 		mixins: [TouchMixin],
-		emits: ['input', 'update:modelValue', 'refresh','reachBottom','scroll'],
+		emits: ['input', 'update:modelValue', 'refresh', 'reachBottom', 'scroll'],
 		options: {
 			styleIsolation: 'shared',
+			// #ifdef MP-WEIXIN || MP-ALIPAY
 			virtualHost: true // [微信小程序、支付宝小程序（默认值为 true）] 将自定义节点设置成虚拟的，更加接近Vue组件的表现。我们不希望自定义组件的这个节点本身可以设置样式、响应 flex 布局等，而是希望自定义组件内部的第一层节点能够响应 flex 布局或者样式由自定义组件本身完全决定
+			// #endif
 		},
 		props: {
 			value: {
@@ -301,7 +303,7 @@
 
 <style lang="scss" scoped>
 	.y-pull-loading {
-		overflow: hidden;
+		// overflow: hidden;
 		user-select: none;
 		display: block;
 		width: 100%;

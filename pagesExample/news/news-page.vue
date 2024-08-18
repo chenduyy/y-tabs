@@ -13,9 +13,10 @@
 		</list>
 		<!-- #endif -->
 		<!-- #ifndef APP-NVUE -->
-		<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" scroll-y refresher-enabled
-			:refresher-triggered="refreshing" @refresherrefresh="onRefresh" @refresherrestore="onRestore"
-			@scrolltolower="loadMore()">
+		<!-- swiper左右滑动时，禁止scroll-view上下滚动与下拉刷新 -->
+		<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" :scroll-y="scrollY"
+			:refresher-enabled="scrollY" :refresher-triggered="refreshing" @refresherrefresh="onRefresh"
+			@refresherrestore="onRestore" @scrolltolower="loadMore()">
 			<view v-for="(item, index) in dataList" :key="item.id"><news-item :newsItem="item" @close="closeItem(index)"
 					@click="goDetail(item)"></news-item></view>
 			<view class="loading-more" v-if="isLoading || dataList.length > 4">
@@ -43,7 +44,8 @@
 			nid: {
 				type: [Number, String],
 				default: ''
-			}
+			},
+			scrollY: Boolean
 		},
 		data() {
 			return {
@@ -56,7 +58,7 @@
 				},
 				pullTimer: null,
 				pulling: false,
-				refreshing: false,//设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发
+				refreshing: false, //设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发
 				refreshFlag: false,
 				refreshText: '',
 				isLoading: false,

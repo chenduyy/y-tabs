@@ -7,93 +7,93 @@
 		<view v-if="transparent" class="y-tabs__depend--transparent" :style="[dependTranStyle]" />
 
 		<!-- 标签栏区域 -->
-		<!-- touchmove.prevent阻止触摸移动事件 -->
-		<view class="y-tabs__wrap" :style="[innerWrapStyle, wrapStyle]" :class="[wrapClass]">
-			<!-- 标签栏左侧插槽 -->
-			<view class="y-tabs__nav-left">
-				<slot name="nav-left" />
-			</view>
-
-			<!-- 标签栏 -->
-			<scroll-view class="y-tabs__scroll" :scroll-x="scrollX" :scroll-y="scrollY"
-				:scroll-with-animation="scrollWithAnimation" scroll-anchoring enable-flex :scroll-left="scrollLeft"
-				:scroll-top="scrollTop" :style="[scrollStyle]" @scroll="handleScrollByNav" @touchmove.stop="() => {}">
-				<view class="y-tabs__nav" :class="[navClass]" :style="[navStyle]">
-					<!-- 标签项 -->
-					<view class="y-tab" v-for="(tab, index) in tabs" :key="tab.key" @tap.stop="onClick(index)"
-						:class="[tabClass(index, tab), tab.titleClass]" :style="[tabStyle(index), tab.titleStyle]">
-						<!-- 标题 -->
-						<view class="y-tab__title" :class="[titleClass(tab)]">
-							<!-- 图标或图片 -->
-							<view class="y-tab__icons" v-if="tab.iconType || tab.imageSrc">
-								<uni-icons v-if="tab.iconType" :custom-prefix="tab.customPrefix" :type="tab.iconType"
-									:size="Number(tab.iconSize)" />
-								<image class="y-tab__image" v-if="tab.imageSrc" :mode="tab.imageMode"
-									:src="tab.imageSrc" />
-							</view>
-							<!-- 标签文本 -->
-							<view class="y-tab__text" :class="[textClass(tab)]">
-
-								<!--快应用联盟不支持动态的具名插槽 -->
-								<!-- #ifdef QUICKAPP-WEBVIEW-UNION -->
-								{{ tab.title }}
-								<!-- #endif -->
-
-
-								<!-- 非快应用联盟：app、h5、小程序端 -->
-								<!-- #ifndef QUICKAPP-WEBVIEW-UNION -->
-
-								<!-- vue2：支持循环生成的具名插槽渲染后备内容 -->
-								<!-- #ifndef VUE3 -->
-								<slot :name="tab.titleSlotName">{{ tab.title }}</slot>
-								<!-- #endif -->
-
-								<!-- vue3： 仅app、h5支持循环生成的具名插槽渲染后备内容，小程序端需通过titleSlot属性处理-->
-								<!-- #ifdef VUE3 -->
-
-								<!-- #ifdef APP-PLUS || H5 -->
-								<slot :name="tab.titleSlotName">{{ tab.title }}</slot>
-								<!-- #endif -->
-
-								<!-- 小程序端：如果用户开启了titleSlot属性，表示自定义标题，否则直接显示传入的title值 -->
-								<!-- #ifndef APP-PLUS || H5 -->
-								<template v-if="tab.titleSlot">
-									<slot :name="tab.titleSlotName" />
-								</template>
-								<template v-else> {{ tab.title }}</template>
-								<!-- #endif -->
-
-								<!-- #endif -->
-
-								<!-- #endif -->
-
-
-							</view>
-						</view>
-						<!-- 标签右上角信息 -->
-						<view class="y-tab__info" v-if="tab.dot || tab.badge">
-							<!-- 提示小红点 -->
-							<text class="y-tab__info--dot" v-if="tab.dot" />
-							<!-- 徽标 -->
-							<text class="y-tab__info--badge" v-if="tab.badge">{{formatBadge(tab) }}</text>
-						</view>
-					</view>
-					<!-- 滑块: 仅支持line、button、line-button ，可使用插槽自定义-->
-					<view v-if="isSlideBlock" class="y-tabs__bar" :class="[barClass]"
-						:style="[barAnimatedStyle,barInnerStyle,barStyle]">
-						<slot name="bar" />
-					</view>
+		<view class="y-tabs__sticky" :style="[stickyStyle]">
+			<view class="y-tabs__wrap" :style="[innerWrapStyle, wrapStyle]" :class="[wrapClass]">
+				<!-- 标签栏左侧插槽 -->
+				<view class="y-tabs__nav-left">
+					<slot name="navLeft" />
 				</view>
-			</scroll-view>
 
-			<!-- 标签栏右侧插槽 -->
-			<view class="y-tabs__nav-right">
-				<slot name="nav-right" />
+				<!-- 标签栏 -->
+				<scroll-view class="y-tabs__scroll" :scroll-x="scrollX" :scroll-y="scrollY"
+					:scroll-with-animation="scrollWithAnimation" scroll-anchoring enable-flex :scroll-left="scrollLeft"
+					:scroll-top="scrollTop" :style="[scrollStyle]" @scroll="handleScrollByNav"
+					@touchmove.stop="() => {}">
+					<view class="y-tabs__nav" :class="[navClass]" :style="[navStyle]">
+						<!-- 标签项 -->
+						<view class="y-tab" v-for="(tab, index) in tabs" :key="tab.key" @tap.stop="onClick(index)"
+							:class="[tabClass(index, tab)]" :style="[tabStyle(index)]">
+							<!-- 标题 -->
+							<view class="y-tab__title" :class="[titleClass(tab)]" :style="[titleStyle(tab)]">
+								<!-- 图标或图片 -->
+								<view class="y-tab__icons" v-if="tab.iconType || tab.imageSrc">
+									<uni-icons v-if="tab.iconType" :custom-prefix="tab.customPrefix"
+										:type="tab.iconType" :size="Number(tab.iconSize)" />
+									<image class="y-tab__image" v-if="tab.imageSrc" :mode="tab.imageMode"
+										:src="tab.imageSrc" />
+								</view>
+								<!-- 标签文本 -->
+								<view class="y-tab__text" :class="[textClass(tab)]">
+
+									<!--快应用联盟不支持动态的具名插槽 -->
+									<!-- #ifdef QUICKAPP-WEBVIEW-UNION -->
+									{{ tab.title }}
+									<!-- #endif -->
+
+
+									<!-- 非快应用联盟：app、h5、小程序端 -->
+									<!-- #ifndef QUICKAPP-WEBVIEW-UNION -->
+
+									<!-- vue2：支持循环生成的具名插槽渲染后备内容 -->
+									<!-- #ifndef VUE3 -->
+									<slot :name="tab.titleSlotName">{{ tab.title }}</slot>
+									<!-- #endif -->
+
+									<!-- vue3： 仅app、h5支持循环生成的具名插槽渲染后备内容，小程序端需通过titleSlot属性处理-->
+									<!-- #ifdef VUE3 -->
+
+									<!-- #ifdef APP-PLUS || H5 -->
+									<slot :name="tab.titleSlotName">{{ tab.title }}</slot>
+									<!-- #endif -->
+
+									<!-- 小程序端：如果用户开启了titleSlot属性，表示自定义标题，否则直接显示传入的title值 -->
+									<!-- #ifndef APP-PLUS || H5 -->
+									<template v-if="tab.titleSlot">
+										<slot :name="tab.titleSlotName" />
+									</template>
+									<template v-else> {{ tab.title }}</template>
+									<!-- #endif -->
+
+									<!-- #endif -->
+
+									<!-- #endif -->
+
+								</view>
+							</view>
+							<!-- 标签右上角信息 -->
+							<view class="y-tab__info" v-if="tab.dot || tab.badge">
+								<!-- 提示小红点 -->
+								<text class="y-tab__info--dot" v-if="tab.dot" />
+								<!-- 徽标 -->
+								<text class="y-tab__info--badge" v-if="tab.badge">{{formatBadge(tab) }}</text>
+							</view>
+						</view>
+						<!-- 滑块: 仅支持line、button、line-button ，可使用插槽自定义-->
+						<view v-if="isSlideBlock" class="y-tabs__bar" :class="[barClass]"
+							:style="[barAnimatedStyle,barInnerStyle,barStyle]">
+							<slot name="bar" />
+						</view>
+					</view>
+				</scroll-view>
+
+				<!-- 标签栏右侧插槽 -->
+				<view class="y-tabs__nav-right">
+					<!-- fix：快手小程序，具名插槽名称包含‘-’时不生效，因此nav-right改为navRight -->
+					<slot name="navRight" />
+				</view>
 			</view>
-		</view>
 
-		<!-- 标签栏占位容器 -->
-		<view class="y-tabs__placeholder" :style="[placeholderStyle]" />
+		</view>
 
 		<!-- 标签内容 -->
 		<view class="y-tabs__content" :class="[contentClass]" @touchstart="touchStart" @touchmove="touchMove"
@@ -168,7 +168,8 @@
 		toClass,
 		getUid,
 		progress,
-		noop
+		noop,
+		now
 	} from '../js/uitls';
 	import { options, emits, props } from '../js/const';
 	import { touchMixin } from '../js/touchMixin';
@@ -193,12 +194,13 @@
 				shouldSetDx: true, //是否可以执行setDx函数
 
 				// 元素节点信息
+				stickyRect: {},
 				wrapRect: {}, //标签栏
 				contentRect: {}, // 标签内容容器
 				barRect: {}, //滑块
 				dependOffsetRect: {}, //标签栏吸顶设置offset时的模拟元素
-				extraWidth: 0, //标签栏nav-left、nav-right插槽宽度
-				extraHeight: 0, //标签栏nav-left、nav-right插槽高度
+				extraWidth: 0, //标签栏navLeft、navRight插槽宽度
+				extraHeight: 0, //标签栏navLeft、navRight插槽高度
 
 				// 标签栏的scroll-view相关
 				scrollLeft: 0, //设置横向滚动条位置
@@ -221,7 +223,10 @@
 
 				// 标签栏吸顶相关
 				// dependObserver: null,
-				isFixed: false, //是否吸顶
+				isFixed: false, //标签栏是否吸顶
+				cssSticky: false, // 是否使用css的sticky实现
+				fixedRelativeHeight: 0, // 标签栏垂直吸顶时，获取参照节点高度
+				vWrapHeight: 0, // 标签栏垂直且吸顶时的视口可见区域的标签容器高度
 
 				// 标签栏渐变相关
 				// tranObserver: null,
@@ -257,6 +262,10 @@
 			// 标签栏是否允许横向滚动
 			scrollX() {
 				return !this.isVertical && this.tabs.length > Number(this.scrollThreshold);
+			},
+			// js模式时，是否处于吸顶模式
+			jsFixed() {
+				return !this.cssSticky && this.isFixed;
 			},
 			// 是否省略过长的标题文字
 			isEllipsis() {
@@ -329,7 +338,7 @@
 			// 标签栏容器class
 			wrapClass() {
 				return toClass({
-						'is-fixed': this.isFixed,
+						'is-fixed': this.jsFixed,
 						'is-transparent': this.transparent,
 						'is-vertical': this.isVertical
 					},
@@ -348,16 +357,47 @@
 			contentClass() {
 				return toClass({ 'is-scrollspy': this.scrollspy, 'is-vertical': this.isVertical });
 			},
+			stickyStyle() {
+				const style = {};
+				if (this.sticky) {
+					if (this.cssSticky) {
+						// css吸顶方案
+						style.position = 'sticky';
+						style.zIndex = this.zIndex;
+						style.top = addUnit(this.offsetTop);
+					} else {
+						//不使用css吸顶方案时，设置relative定位
+						if (this.closeCssSticky) style.position = 'relative';
+						// js吸顶方案时，给定宽高，防止元素坍塌
+						["width", "height"].forEach(key => (style[key] = addUnit(this.stickyRect[key])));
+					}
+				} else {
+					// 无需吸顶时，设置relative定位
+					style.position = 'relative';
+				}
+				return style;
+			},
 			// 标签栏容器样式
 			innerWrapStyle() {
 				const style = {};
 				// 透明标签栏使用transparentBgColor
 				const background = !this.transparent ? this.background : this.transparentBgColor;
-				if (!isNull(background)) style.background = background
-				// 滚动吸顶
-				if (this.isFixed) {
-					style.top = this.offsetTop + 'px';
-					if (!isNull(this.zIndex)) style.zIndex = this.zIndex;
+				if (!isNull(background)) style.background = background;
+
+				// js吸顶方案
+				if (this.sticky && !this.cssSticky) {
+					style.position = this.isFixed ? 'fixed' : 'static' //静态定位的元素不会受到 top, bottom, left, right、z-index影响
+					style.top = addUnit(this.offsetTop)
+					// 防止元素塌陷
+					style.left = addUnit(this.stickyRect.left)
+					style.width = addUnit(this.stickyRect.width)
+					style.zIndex = this.zIndex;
+				}
+
+				// 标签栏垂直吸顶时，需要设置高度，否则scroll-view无法滚动
+				if (this.isVertical && this.isFixed) {
+					// 吸顶时的高度为吸顶监听获取的参照节点高度，但用户可能会手动设置吸顶时的标签栏高度，因此取最小值
+					style.height = addUnit(Math.min(this.fixedRelativeHeight, this.wrapRect.height))
 				}
 				return style;
 			},
@@ -379,12 +419,6 @@
 			},
 			dependTranStyle() {
 				return { height: `${Number(this.transparentOffset)}px` };
-			},
-			// 标签栏占位元素样式
-			placeholderStyle() {
-				if (!this.isFixed) return {}
-				if (!this.isVertical) return { height: this.scrollViewRect?.height + 'px' }; //标签栏水平展示时设置占位元素高度
-				else return { width: this.scrollViewRect?.width + 'px' }; //标签栏垂直展示时设置占位元素宽度
 			},
 			// 滑块透明度
 			lineOpacity() {
@@ -449,11 +483,11 @@
 				// 标签垂直展示,计算height,只需减去扩展插槽高度
 				return { height: `calc(100% - ${this.extraHeight}px)` }
 			},
-			// 标签水平展示时到中心点的宽度
+			// 标签水平展示时到中心点的宽度 
 			tabCenterWidth() {
 				// 首次获取scrollViewRect时，宽度不正确（没有剔除扩展插槽，可能是由于渲染机制的问题）
-				// 因此这里作个比较,如果viewW小于wrapW，则使用viewW，否则wrapW-extraWidth
-				// 注意：不要给yui-tabs__scroll设置margin、padding，并设定插槽
+				// 因此做个比较,如果viewW小于wrapW，则使用viewW，否则wrapW-extraWidth
+				// 注意：不要给yui-tabs__scroll设置margin、padding
 				const wrapW = this.wrapRect?.width;
 				const viewW = this.scrollViewRect?.width;
 				const width = viewW < wrapW ? viewW : wrapW - this.extraWidth;
@@ -507,9 +541,11 @@
 				// 需要$nextTick一下，否则导致新选中的标签节点信息获取有误
 				this.$nextTick(() => {
 					this.setLine(); //设置底部线条位置
-					this.changeStatus(newIdx, oldIdx); // 状态变更
-					this.changeStyle(); // 样式切换
-					// this.scrollPosition(newIdx, oldIdx); //内容滚动位置定位
+					//非滚动导航
+					if (!this.scrollspy) {
+						this.changeStatus(newIdx, oldIdx); // 状态变更
+						this.changeStyle(); // 样式切换
+					}
 				})
 			},
 			// 监听背景色变化，重新获取rgba各值
@@ -550,6 +586,8 @@
 		created() {
 			//存放引用的变量，如果在data中定义会报错：  Property or method "toJSON" is not defined on the instance but referenced during render.
 			this.childrens = [];
+		},
+		mounted() {
 		},
 		// #ifndef VUE3
 		destroyed() {
@@ -614,9 +652,8 @@
 				const defaultSlotName = 'title' + this.tabs.length //标题的默认插槽名
 				this.tabs.push({
 					...props,
-					// titleSlot: 'title' + this.tabs.length,
 					//标题插槽名，默认以"title"+下标命名，如果用户设置了titleSlotName，就使用titleSlotName
-					//,vue3只有H5、app支持自定义标签插槽
+					//vue3只有H5、app支持自定义标签插槽,因此通过titleSlot控制vue3下的小程序端是否使用插槽，否则直接显示标题
 					defaultSlotName, //标题的默认插槽名
 					titleSlotName: this.getTitleSlotName(defaultSlotName, props?.titleSlotName), //标题的实际插槽名
 					show: this.scrollspy //是否显示内容（滚动导航模式默认显示）
@@ -650,7 +687,8 @@
 						'y-tab__next': index === this.currentIndex + 1 //与当前标签相邻的后面的标签
 					},
 					`is-${this.type}`,
-					`y-tab_${index}`
+					`y-tab_${index}`,
+					tab.titleClass
 				);
 			},
 			// 标签区域class
@@ -664,38 +702,44 @@
 			// 标签项style
 			tabStyle(index) {
 				const activated = this.currentIndex === index;
+				// type="card" 时，选中时背景色为主题色
+				if (activated && this.type === "card") return { background: this.color }
+				else return {}
+			},
+			// 标题style
+			titleStyle(tab) {
+				const activated = this.currentIndex === tab.index;
 				let { titleActiveColor: color, titleInactiveColor: defColor } = this;
-				let background = '';
-				let borderColor = '';
 
-				if (this.type === 'line') {
-					if (isNull(color)) color = '#323233';
-					if (isNull(defColor)) defColor = '#646566';
-				} else if (this.type === 'text') {
-					// type="text" 时，选中时使用主题色
-					if (isNull(color)) color = this.color;
-					if (isNull(defColor)) defColor = '#323233';
-				} else if (this.type === 'card') {
-					// type="card" 时，未选中则使用主题色
-					background = this.color;
-					if (isNull(color)) color = '#fff';
-					if (isNull(defColor)) defColor = this.color;
-				} else if (this.type === 'button') {
-					// 非滑块时设置背景色
-					// if (!this.isSlideBlock) background = this.color;
-					if (isNull(color)) color = '#fff';
-					if (isNull(defColor)) defColor = '#323233';
-				} else if (this.type === 'line-button') {
-					// 非滑块时设置边框颜色
-					// if (!this.isSlideBlock) borderColor = this.color;
-					if (isNull(color)) color = this.color;
-					if (isNull(defColor)) defColor = '#323233';
+				switch (this.type) {
+					case 'line':
+						if (isNull(color)) color = '#323233';
+						if (isNull(defColor)) defColor = '#646566';
+						break;
+					case 'text':
+						// type="text" 时，选中时使用主题色
+						if (isNull(color)) color = this.color;
+						if (isNull(defColor)) defColor = '#323233';
+						break;
+					case 'card':
+						if (isNull(color)) color = '#fff';
+						if (isNull(defColor)) defColor = this.color;
+						break;
+					case 'button':
+						if (isNull(color)) color = '#fff';
+						if (isNull(defColor)) defColor = '#323233';
+					case 'line-button':
+						if (isNull(color)) color = this.color;
+						if (isNull(defColor)) defColor = '#323233';
+						break;
 				}
 
+				// 标题选中时和默认时的样式
+				const titleStyle = activated ? this.titleActiveStyle : this.titleInactiveStyle
 				const style = {
 					color: activated ? color : defColor,
-					background: activated ? background : '',
-					borderColor: activated ? borderColor : ''
+					...(titleStyle || {}),
+					...(tab.titleStyle || {})
 				};
 				return style;
 			},
@@ -710,12 +754,13 @@
 			// 初始化操作
 			async init(callback) {
 				try {
+					this.stickyRect = await this.getRect('.y-tabs__sticky');
 					this.wrapRect = await this.getRect('.y-tabs__wrap'); //标签栏包裹层节点信息（在小程序中，偶发性高度获取不正确）
 					this.scrollViewRect = await this.getRect('.y-tabs__scroll'); //标签栏scroll-view的节点信息
 					this.barRect = await this.getRect('.y-tabs__bar'); //滑块节点信息
 					this.contentRect = await this.getRect('.y-tabs__content'); //标签内容节点信息
 					this.dependOffsetRect = await this.getRect('.y-tabs__depend--offset'); //标签栏吸顶设置offset时的模拟元素
-					// nav-left、nav-right插槽宽度、高度,计算额外宽高
+					// navLeft、navRight插槽宽度、高度,计算额外宽高
 					const r1 = await this.getRect('.y-tabs__nav-left');
 					const r2 = await this.getRect('.y-tabs__nav-right');
 					this.extraWidth = r1?.width + r2?.width;
@@ -776,10 +821,13 @@
 			async observeSticky() {
 				//  offsetTop（只在初始化时有效，不能动态变更），使用resize初始化一下可生效。
 				if (!this.sticky) return;
+
+				if (!this.closeCssSticky) this.checkSupportCssSticky(); //检测是否支持css sticky
+
 				this.disconnectObserver('dependObserver'); // 先断掉之前的观察
 				// 检测的区间范围(在目标节点与参照节点在页面显示区域内相交或相离，且相交或相离程度达到目标节点布局区域的20%和50%时，触发回调函数)
 				const dependObserver = uni.createIntersectionObserver(this, {
-					thresholds: [0.01, 0.5, 1]
+					thresholds: [0, 0.95, 0.98, 1]
 				});
 				const offsetTop = Number(this.offsetTop)
 				dependObserver.relativeToViewport({ top: -offsetTop }); // 到屏幕顶部的高度时触发
@@ -787,8 +835,72 @@
 				dependObserver.observe(`.${this.uniqueTabsClass} .y-tabs__depend`, res => {
 					// 判断是否达到吸顶条件范围
 					this.isFixed = res.intersectionRatio <= 0 && res.boundingClientRect.top <= offsetTop;
+					// 标签栏垂直吸顶时，获取参照节点高度
+					if (this.isVertical && this.isFixed) this.fixedRelativeHeight = res.relativeRect.height
 				});
 				this.dependObserver = dependObserver;
+			},
+			// 检测是否支持css sticky
+			async checkSupportCssSticky() {
+				// #ifdef H5
+				// H5，一般都是现代浏览器，是支持css sticky的，这里使用创建元素嗅探的形式判断
+				if (this.checkCssStickyForH5()) {
+					this.cssSticky = true
+				}
+				// #endif
+
+				const sys = uni.getSystemInfoSync();
+				const os = sys.platform.toLowerCase();
+				// 如果安卓版本高于8.0，依然认为是支持css sticky的(因为安卓7在某些机型，可能不支持sticky)
+				if (os === 'android' && Number(sys.system) > 8) {
+					this.cssSticky = true
+				}
+
+				// APP-Vue和微信小程序，通过computedStyle判断是否支持css sticky
+				// #ifdef APP-VUE || MP-WEIXIN
+				this.cssSticky = await this.checkComputedStyle()
+				// #endif
+
+				// ios上，从ios6开始，都是支持css sticky的
+				if (os === 'ios') {
+					this.cssSticky = true
+				}
+
+				// nvue，是支持css sticky的
+				// #ifdef APP-NVUE
+				this.cssSticky = true
+				// #endif
+
+				console.log("cssSticky:" + this.cssSticky);
+
+			},
+			// 在APP和微信小程序上，通过uni.createSelectorQuery可以判断是否支持css sticky
+			checkComputedStyle() {
+				// 方法内进行判断，避免在其他平台生成无用代码
+				// #ifdef APP-VUE || MP-WEIXIN
+				return new Promise(resolve => {
+					uni.createSelectorQuery().in(this).select('.y-tabs__sticky').fields({
+						computedStyle: ["position"] //指定样式名列表，返回节点对应样式名的当前值（仅 App 和微信小程序支持）
+					}).exec(e => resolve('sticky' === e?.[0]?.position))
+				})
+				// #endif
+			},
+			// H5通过创建元素的形式嗅探是否支持css sticky
+			// 判断浏览器是否支持sticky属性
+			checkCssStickyForH5() {
+				// 方法内进行判断，避免在其他平台生成无用代码
+				// #ifdef H5
+				const vendorList = ['', '-webkit-', '-ms-', '-moz-', '-o-'],
+					vendorListLength = vendorList.length,
+					stickyElement = document.createElement('div')
+				for (let i = 0; i < vendorListLength; i++) {
+					stickyElement.style.position = vendorList[i] + 'sticky'
+					if (stickyElement.style.position !== '') {
+						return true
+					}
+				}
+				return false;
+				// #endif
 			},
 			// 观察 - 透明渐变标签栏
 			async observerTransparent() {
@@ -878,8 +990,12 @@
 				//禁止重复切换
 				if (shouldEmit) {
 					// 更新v-model绑定的值
+					// #ifndef VUE3
 					this.$emit("input", computedName);
+					// #endif
+					// #ifdef VUE3
 					this.$emit("update:modelValue", computedName);
+					// #endif
 					if (shouldEmitChange) this.$emit('change', computedName, title); //emit change事件:当前激活的标签改变时触发
 				}
 			},
@@ -944,7 +1060,6 @@
 
 				// 获取当前pane上边距与页面顶部的距离
 				let { top = 0 } = await this.childrens[this.currentIndex].getRect();
-
 				if (this.pageScroll) {
 					// 页面滚动，滚动导航模式下设置了吸顶，需要减去标签栏高度及标签栏距离屏幕顶部的高度
 					if (this.scrollNav && this.sticky) {
@@ -1002,10 +1117,12 @@
 			handleTransparentColor(ms = 0) {
 				ms = ms + 50;
 				this.intervalFn(async (clear) => {
-					const rect = await this.getScrollViewRect();
-					if (ms > 0 && rect?.scrollTop <= this.transparentOffset) {
-						ms -= 50
-						let opacity = Math.min(rect?.scrollTop || 0, this.transparentOffset) * 0.01;
+					const { scrollTop = 0 } = await this.getScrollViewRect();
+					if (ms > 0) {
+						let opacity = scrollTop < this.transparentOffset ? scrollTop * 0.01 : 1;
+						if (opacity < 1) ms -= 50
+						else ms = 0
+
 						const { A, R, G, B } = this.rgba || {};
 						opacity = Math.min(Math.max(A, opacity), 1);
 						this.transparentBgColor = `rgba(${R},${G},${B},${opacity})`;
@@ -1021,26 +1138,22 @@
 				let index = 0;
 				if (childs.length > 0) {
 					const dIndex = childs[childs.length - 1].index;
-					index = dIndex === this.childrens.length - 1 ? dIndex : dIndex + 1; //如果是最后一个，则直接取下标，否则+1取下一个
+					index = dIndex === this.childrens.length - 1 ? dIndex : dIndex +
+						1; //如果是最后一个，则直接取下标，否则+1取下一个
 				}
-				this.setCurrentIndex(index);
+				if (index !== this.currentIndex) this.setCurrentIndex(index);
 			},
 			// 状态变更
 			changeStatus(newIdx, oldIdx) {
-				//非滚动导航
-				if (!this.scrollspy) {
-					this.tabs[oldIdx] && (this.tabs[oldIdx].show = false); //标记旧tab内容隐藏
-					this.tabs[newIdx] && (this.tabs[newIdx].show = true); // 标记当前tab内容显示
-					this.childrens[newIdx] && (this.childrens[newIdx].rendered = true); //标记当前tab内容渲染过
-				}
+				this.tabs[oldIdx] && (this.tabs[oldIdx].show = false); //标记旧tab内容隐藏
+				this.tabs[newIdx] && (this.tabs[newIdx].show = true); // 标记当前tab内容显示
+				this.childrens[newIdx] && (this.childrens[newIdx].rendered = true); //标记当前tab内容渲染过
 
 				// 子数组标记激活状态
 				this.childrens.forEach((child, index) => (child.active = newIdx === index));
 			},
 			// 样式切换
 			async changeStyle() {
-				// 非滚动导航,不对内容区进行样式调整
-				if (this.scrollspy) return
 				this.changeTrackStyle(false); //改变标签内容滑动轨道样式
 				await this.callNextTick(); //nextTick一下
 
@@ -1124,15 +1237,21 @@
 			// 获取页面或内容区域的滚动高度
 			getScrollViewRect() {
 				return new Promise((resolve, reject) => {
-					const query = this.getSelectorQuery();
 					// 页面级滚动，获取viewport的滚动距离;区域滚动，获取scroll-view的滚动距离
-					const nodeRef = this.pageScroll ? query.selectViewport() : query.select(
-						`.${this.uniqueTabsClass} .y-tabs__content-scrollview`);
-					nodeRef.fields({ size: true, scrollOffset: true }, res => resolve(res || {})).exec();
+
+					// fix：在快手小程序端，如果获取显示区域的滚动位置使用了in(this)，则会导致scrollTop为0
+					// const nodeRef = this.pageScroll ? query.selectViewport() : query.select(
+					// 	`.${this.uniqueTabsClass} .y-tabs__content-scrollview`);
+					// nodeRef.scrollOffset(res => resolve(res || {})).exec();
+					const nodeRef = this.pageScroll ? uni.createSelectorQuery().selectViewport() : this
+						.getSelectorQuery().select(
+							`.${this.uniqueTabsClass} .y-tabs__content-scrollview`);
+					nodeRef.scrollOffset(res => resolve(res || {})).exec()
 				});
 			},
 			// 更新标签栏wrap的节点信息
 			updateTabsWrapRect() {
+				if (!this.isVertical) return;
 				// 标签栏垂直展示下的吸顶，需重新获取标签栏wrap的节点信息，并更新tab的barOffset、scrollOffset
 				this.$nextTick(async () => {
 					this.wrapRect = await this.getRect('.y-tabs__wrap'); //标签栏节点信息
@@ -1364,7 +1483,7 @@
 			getBarPostion(currIndex, dx) {
 				let barOffset = this.barOffset;
 				let barCalcedWidth = this.barCalcedWidth;
-				dx = Number(dx.toFixed(0)); //取整，避免超过contentWidth
+				dx = Number(dx).toFixed(0); //取整，避免超过contentWidth
 				const isRight = dx <= 0; //通过dx判断是否向右滑动
 
 				let dxRate = dx / (this.contentWidth + 0.1); //+0.1，避免dxRate为1时造成的底部条错位

@@ -8,7 +8,7 @@
 		display: flex;
 		flex-wrap: nowrap;
 		flex-direction: row;
-		justify-content: flex-end;
+		justify-content: flex-start;
 		flex: 1;
 
 		// 垂直时标签栏scroll-view的子项垂直排列
@@ -87,16 +87,6 @@
 	height: 1px;
 }
 
-// 标签栏占位元素
-.y-tabs__placeholder {
-	position: relative;
-}
-
-// 标签垂直展示且吸顶时，标签栏占位元素不伸缩
-.y-tabs.is-fixed.is-vertical .y-tabs__placeholder {
-	flex-shrink: 0;
-}
-
 // 文字省略
 .y-tabs__ellipsis {
 	overflow: hidden;
@@ -104,9 +94,31 @@
 	white-space: nowrap;
 }
 
+// #ifdef APP-VUE || MP-WEIXIN
+.y-tabs__sticky{
+	// 此处默认写sticky属性，是为了给微信和APP通过uni.createSelectorQuery查询是否支持css sticky使用
+	position: sticky;
+}
+// #endif
+
+// position:sticky 的生效规则
+// 1.必须指定 top, right, bottom 或 left 四个阈值其中之一（且达到设定的阈值），才可使粘性定位生效。否则其行为与相对定位相同；
+//   并且 top 和 bottom 同时设置时，top 生效的优先级高，left 和 right 同时设置时，left 的优先级高
+// 2.设定为 position: sticky 的元素的任意父节点的 overflow 属性必须是 visible，否则 position:sticky 不会生效；
+// 3.在满足上述情况下，设定了 position: sticky 的元素的父容器的高度必须大于当前元素，否则也会失效。（当然，此时，sticky 吸附的基准元素就会变成父元素）
+
+
+.y-tabs.is-vertical .y-tabs__sticky{
+	//Flexbox布局中的特殊处理：在Flexbox布局中，可以通过设置align-self: flex-start来确保粘性元素放在开头不会拉伸到无法滚动的状态，从而保持其可滚动性
+	align-self: flex-start; 
+	height: 100%;
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
 // 导航区域包裹层
 .y-tabs__wrap {
-	position: relative;
+	// position: relative;
 	display: flex;
 	align-items: center;
 	overflow: hidden;
@@ -120,7 +132,6 @@
 		width: 100px;
 		display: flex;
 		flex-direction: column;
-		flex-shrink: 0;
 		height: 100%;
 	}
 
@@ -128,16 +139,10 @@
 	&.is-fixed {
 		position: fixed;
 		top: 0;
-		right: 0;
 		left: 0;
+		right: 0;
 		z-index: 99;
 	}
-
-	// 标签垂直展示且吸顶时，给定bottom，否则scroll-view不会滚动
-	&.is-fixed.is-vertical {
-		bottom: 0;
-	}
-
 	// 透明的导航区域包裹层
 	&.is-transparent {
 		background: rgba(255, 255, 255, 0);
@@ -156,6 +161,7 @@
 	width: 100%;
 	white-space: nowrap; // 使用横向滚动时，需要给<scroll-view>添加white-space: nowrap;样式
 	flex-direction: row;
+	box-sizing: border-box;
 }
 
 // 条件编译不放在样式中，vue3无效
@@ -167,7 +173,7 @@
 	display: none;
 	width: 0;
 	height: 0;
-	-webkit-appearance: none;
+	appearance: none; //移除元素的默认外观，包括平台特有的装饰，使元素“裸奔”，便于自定义样式。
 	background: transparent;
 	color: transparent;
 }
@@ -180,7 +186,7 @@
 	display: none;
 	width: 0;
 	height: 0;
-	-webkit-appearance: none;
+	appearance: none;
 	background: transparent;
 	color: transparent;
 }
@@ -425,11 +431,12 @@
 	display: block;
 	position: relative;
 	height: 100%;
+	overflow: hidden; 
 	
 	// 非导航模式才设置overflow，否则会影响position: sticky
-	&:not(.is-scrollspy){
-		overflow: hidden; //会导致uni-data-select无法撑开显示下拉选项,最好给pane中的内容设置一个高度(如果包裹select的父元素都没有设置relative，则不会裁剪absolute属性的元素)
-	}
+	// &:not(.is-scrollspy){
+	// 	overflow: hidden; //会导致uni-data-select无法撑开显示下拉选项,最好给pane中的内容设置一个高度(如果包裹select的父元素都没有设置relative，则不会裁剪absolute属性的元素)
+	// }
 	// 标签栏垂直展示，内容减去标签栏默认宽度
 	&.is-vertical {
 		width: 100%;

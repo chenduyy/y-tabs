@@ -4,9 +4,14 @@
 		<view class="info-wrap">
 			<h3>透明导航栏下的滚动吸顶</h3>
 			<view>在导航栏+状态栏透明的场景下的标签栏吸顶。</view>
-			<view>本案例在微信小程序中，未吸顶时，标签栏背景色为灰色，且没有paddingTop值;吸顶时，标签栏背景色为白色，有paddingTop值，paddingTop撑开了透明的状态栏+导航栏区域</view>
+			<view>本案例在微信小程序中，未吸顶时，标签栏背景色为灰色；吸顶时，标签栏背景色为白色，显示一个固定在顶部的白色遮罩层，用于遮挡透明的状态栏+导航栏区域</view>
 		</view>
-		<y-tabs v-model="activeIndex" :background="background"   sticky :offsetTop="0" :wrapStyle="wrapStyle" :stickyThreshold="navHeight" @sticky-change="stickyChange">
+
+		<!-- 固定在顶部的用于遮住状态栏+透明导航栏的遮罩区域（吸顶时才给定高度显示出来） -->
+		<view class="fixed-mask" :style="[fixedMaskStyle]"></view>
+
+		<y-tabs v-model="activeIndex" :background="background" sticky :offsetTop="navHeight"
+			@sticky-change="stickyChange">
 			<y-tab class="y-tab-virtual" v-for="(title, index) in tabs" :title="title" :key="index">
 				<goods-list :activeIndex="index" />
 			</y-tab>
@@ -17,7 +22,7 @@
 <script>
 	import goodsList from '@/components/goods-list';
 	import { getHeaderHeight } from "@/common/uitls"
-	
+
 	export default {
 		options: {
 			styleIsolation: 'shared' // shared:表示页面 wxss 样式将影响到自定义组件
@@ -44,24 +49,32 @@
 			}
 		},
 		computed: {
-			// 固定的标签页的标签栏样式
-			wrapStyle() {
-				return {
-					// 吸顶时给定一个等于导航高度的paddingTop值，用于遮住透明的导航+状态栏区域
-					paddingTop: this.isFixed ? this.navHeight + 'px' : 0
-				}
-			},
 			// 标签栏背景色
 			background() {
 				// 吸顶时标签栏背景色为白色，否则为灰色
 				return this.isFixed ? "#FFF" : "#F5F5F5"
-			}
+			},
+			// 固定在顶部的用于遮住状态栏+透明导航栏的遮罩区域（吸顶时才给定高度显示出来）
+			fixedMaskStyle() {
+				return {
+					position: this.isFixed ? 'fixed' : 'static',
+					height: this.isFixed ? this.navHeight + 'px' : 0,
+					top: 0,
+					left: 0,
+					right: 0,
+					background: "#fff",
+					zIndex: 99,
+				}
+			},
 		},
 		mounted() {
 			// 由于设置了"navigationStyle": "custom",窗口为沉浸式,因此导航区域高度为导航栏高度+状态栏高度
 			// #ifndef H5
 			this.navHeight = getHeaderHeight().navHeight;
-			console.log(this.navHeight);
+			// #endif
+			// app需要减去44px的导航栏高度
+			// #ifdef APP-PLUS
+			this.navHeight -= 44;
 			// #endif
 		},
 		methods: {

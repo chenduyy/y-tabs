@@ -21,7 +21,7 @@ export const touchMixin = function() {
 		computed: {
 			// 是否允许水平滑动
 			horizontalSwipe() {
-				return this.swipeable && this.tonchOpt.nestedSwipeable
+				return this.swipeable && this.tonchOpt.nestedSwipeable && !this.scrollspy
 			}
 		},
 		created() {
@@ -128,7 +128,7 @@ export const touchMixin = function() {
 			setNestTabsSwipe(value) {
 				if (!this.nestedTabs) return;
 				this.nestedTabs.tonchOpt.nestedSwipeable = value
-			}
+			},
 		}
 	}
 }

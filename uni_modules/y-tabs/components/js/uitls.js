@@ -178,3 +178,36 @@ export function hasOwn(obj, key) {
 export const now = Date.now || function() {
 	return +new Date();
 };
+
+
+
+/**
+ * 是否数组
+ */
+export function array(value) {
+    if (typeof Array.isArray === 'function') {
+        return Array.isArray(value)
+    }
+    return Object.prototype.toString.call(value) === '[object Array]'
+}
+
+/**
+ * @description 深度克隆
+ * @param {object} obj 需要深度克隆的对象
+ * @returns {*} 克隆后的对象或者原值（不是对象）
+ */
+export function deepClone(obj) {
+	// 对常见的“非”值，直接返回原来值
+	if ([null, undefined, NaN, false].includes(obj)) return obj
+	if (typeof obj !== 'object' && typeof obj !== 'function') {
+		// 原始类型直接返回
+		return obj
+	}
+	const o = array(obj) ? [] : {}
+	for (const i in obj) {
+		if (obj.hasOwnProperty(i)) {
+			o[i] = typeof obj[i] === 'object' ? deepClone(obj[i]) : obj[i]
+		}
+	}
+	return o
+}

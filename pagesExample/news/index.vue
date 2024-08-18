@@ -1,15 +1,15 @@
 <template>
 	<!-- pages.json中设置"disableScroll": true使页面整体不能上下滚动，内容页中使用scroll-view实现局部滚动 -->
 	<view class="page-container">
-		<y-tabs ref="tabs" v-model="activeIndex" barAnimateMode="worm-ease" color="#1989fa" title-active-color="#000" title-inactive-color="#555" background="#fff" @click="onClick"
-			@change="onChange">
+		<y-tabs ref="tabs" v-model="activeIndex" barAnimateMode="worm-ease" color="#1989fa" title-active-color="#000"
+			title-inactive-color="#555" background="#fff" @click="onClick" @change="onChange">
 			<y-tab class="y-tab-virtual" v-for="(tab, index) in tabs" :title="tab.title" :key="tab.newsid">
 				<!-- <newsPage class="page-item" :nid="tab.newsid" :ref="'page' + index" /> -->
 			</y-tab>
 		</y-tabs>
 		<swiper class="swiper" :current="activeIndex" @transition="onTransition" @animationfinish="onAnimationfinish">
 			<swiper-item v-for="(tab, index) in tabs" :key="tab.newsid">
-				<newsPage class="page-item" :nid="tab.newsid" :ref="'page' + index" />
+				<newsPage class="page-item" :nid="tab.newsid" :ref="'page' + index" :scrollY="scrollY" />
 			</swiper-item>
 		</swiper>
 	</view>
@@ -40,7 +40,7 @@
 		},
 		provide() {
 			return {
-				newsParent: this //提供引用供后代组件使用
+				newsParent: this, //提供引用供后代组件使用
 			}
 		},
 		data() {
@@ -74,6 +74,7 @@
 				pageList: [],
 				cacheTab: [],
 				isTap: false, //是否是点击标签进行切换的
+				scrollY: true, //是否开启scroll-view的上下滑动，swiper左右滑动时不开启
 			};
 		},
 		methods: {
@@ -81,7 +82,8 @@
 			handleCacheTab() {
 				// 缓存 tabId (内容页列表长度超过100，则进行缓存)
 				// click事件在change事件之前执行，因此点击click时，this.activeIndex为上一次记录的下标，缓存tabId是缓存上一次显示的tab内容
-				if (this.pageList?.[this.activeIndex].dataList?.length > MAX_CACHE_DATA && !this.cacheTab.includes(this.activeIndex)) {
+				if (this.pageList?.[this.activeIndex].dataList?.length > MAX_CACHE_DATA && !this.cacheTab.includes(this
+						.activeIndex)) {
 					this.cacheTab.push(this.activeIndex);
 					// console.log("cache:", this.activeIndex);
 				}
@@ -115,6 +117,7 @@
 			},
 			//swiper-item的位置发生改变时
 			onTransition(e) {
+				this.scrollY = false
 				// 注意：
 				// swiper组件的current初始化时一定要保证是第一项的下标，否则在微信小程序中dx会异常
 				// 飞书的dx变化规律难以与微信小程序统一，因此暂无法实现
@@ -125,6 +128,7 @@
 				// 滑动切换时才进行缓存、释放tab，点击标签时触发了click事件进行该操作
 				if (!this.isTap) this.handleCacheTab(); //缓存、释放tab
 				this.isTap = false;
+				this.scrollY = true
 
 				this.activeIndex = e.detail.current;
 				setTimeout(() => this.$refs.tabs.unlockDx(), 0) //通知y-tabs解除对setDx()的锁定

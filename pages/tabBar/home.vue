@@ -1,12 +1,12 @@
 <template>
-	<!-- 禁止滚动穿透 -->
 	<view class="page-container">
+		<!-- 固定在顶部的用于遮住状态栏+透明导航栏的遮罩区域（吸顶时才给定高度显示出来） -->
+		<view class="fixed-mask" :style="[fixedMaskStyle]"></view>
 		<banner />
-		<y-tabs v-model="activeIndex" :background="background" animated sticky :offsetTop="0" :wrapStyle="wrapStyle"
-			:stickyThreshold="navHeight" @sticky-change="stickyChange" swipeable >
-
+		<y-tabs v-model="activeIndex" :background="background" animated sticky :closeCssSticky="false"
+			:offsetTop="navHeight" @sticky-change="stickyChange" swipeable>
 			<!-- 标签栏右侧内容 -->
-			<template #nav-right>
+			<template #navRight>
 				<view class="nav-right-wrap">
 					<text class="text">更多</text>
 					<uni-icons type="right" :color="'#5e6d82'" size="14" />
@@ -45,17 +45,22 @@
 			}
 		},
 		computed: {
-			// 固定的标签页的标签栏样式
-			wrapStyle() {
-				return {
-					// 吸顶时给定一个等于导航高度的paddingTop值，用于遮住透明的导航+状态栏区域
-					paddingTop: this.isFixed ? this.navHeight + 'px' : 0
-				}
-			},
 			// 标签栏背景色
 			background() {
 				// 吸顶时标签栏背景色为白色，否则为灰色
 				return this.isFixed ? "#FFF" : "#F5F5F5"
+			},
+			// 固定在顶部的用于遮住状态栏+透明导航栏的遮罩区域（吸顶时才给定高度显示出来）
+			fixedMaskStyle() {
+				return {
+					position: this.isFixed ? 'fixed' : 'static',
+					height: this.isFixed ? this.navHeight + 'px' : 0,
+					top: 0,
+					left: 0,
+					right: 0,
+					background: "#fff",
+					zIndex: 99,
+				}
 			},
 		},
 		mounted() {
@@ -63,9 +68,9 @@
 			// #ifndef H5
 			this.navHeight = getHeaderHeight().navHeight;
 			// #endif
-			// app需要减去45的导航栏高度
+			// app需要减去44px的导航栏高度
 			// #ifdef APP-PLUS
-			this.navHeight -= 45;
+			this.navHeight -= 44;
 			// #endif
 		},
 		methods: {
@@ -87,6 +92,7 @@
 		.text {
 			display: inline-block;
 			white-space: nowrap;
+			color: #5e6d82;
 		}
 	}
 </style>

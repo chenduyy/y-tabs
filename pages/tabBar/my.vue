@@ -1,11 +1,12 @@
 4<template>
 	<view class="container">
 		<!-- <button size="mini" type="primary" style="margin: 10rpx;" @click="()={}">toPage</button> -->
-		<y-tabs ref="tabs" v-model="activeIndex" swipeable>
-			<!-- <y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
+		<view style="height: 40vh;"></view>
+		<y-tabs ref="tabs" v-model="activeIndex" swipeable sticky direction="vertical" scrollspy>
+			<y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
 				:title="tab.title+(index==2?'哈哈哈哈哈哈哈哈哈哈哈哈哈哈':'')">
 				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
-			</y-tab> -->
+			</y-tab>
 			<!-- <y-tab class="y-tab-virtual" v-for="(tab,index) in tabs" :key="index"
 				:title="tab.title">
 				<template v-slot:title0>111</template>
@@ -19,15 +20,15 @@
 				  </template>
 				<view class="content-wrap" :style="{backgroundColor: tab.color}"> {{tab.title}}</view>
 			</y-tab> -->
-			<template #customTitle>
+			<!-- 	<template #customTitle>
 				自定义标题 
 			</template>
 			<y-tab class="y-tab-virtual" title="关注" titleSlot titleSlotName="customTitle">
-				<view class="content-wrap"> 1111</view>
+				<view class="content-wrap"> 关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注关注</view>
 			</y-tab>
 			<y-tab class="y-tab-virtual" title="动态">
-				<view class="content-wrap"> 1111</view>
-			</y-tab>
+				<view class="content-wrap"> 动态动态动态</view>
+			</y-tab> -->
 			<!-- <y-tab class="y-tab-virtual" title="1111111">
 				<view class="content-wrap"> 1111</view>
 			</y-tab>
@@ -37,7 +38,7 @@
 				</view>
 			</y-tab> -->
 		</y-tabs>
-
+		<view style="height: 140vh;"></view>
 	</view>
 </template>
 
@@ -45,12 +46,12 @@
 	export default {
 		data() {
 			return {
-				tabs: this.$getTabs(2),
+				tabs: this.$getTabs(5),
 				activeIndex: 0,
 			};
 		},
 		methods: {
-			printSlot(slotProps){
+			printSlot(slotProps) {
 				console.log(slotProps.data);
 			}
 		}

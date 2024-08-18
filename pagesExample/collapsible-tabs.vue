@@ -1,10 +1,10 @@
 <template>
-	<!-- 在 微信小程序/App 平台可使用 page-meta 组件动态修改页面样式 来禁止滚动穿透 -->
-	<page-meta :page-style="'overflow:'+(show?'hidden':'visible')"></page-meta>
+	<!-- 在 微信小程序/App 平台可使用 page-meta 组件动态修改页面样式 来禁止滚动穿透，会导致页面重新渲染 -->
+	<!-- <page-meta :page-style="'overflow:'+(show?'hidden':'visible')"></page-meta> -->
 	<view class="page-container">
-		<y-tabs ref="tabs" v-model="activeIndex" type="text" title-active-color="#000" title-inactive-color="#666" sticky :offsetTop="offsetTop">
-			<y-tab class="y-tab-virtual" v-for="(item,index) in myTabs" :key="item.key" :title="item.title"
-				:title-style="{fontSize:activeIndex===index?'15px':'13px',padding: '0 20rpx',}">
+		<y-tabs ref="tabs" v-model="activeIndex" type="text" title-active-color="#000" title-inactive-color="#666"
+			sticky :offsetTop="offsetTop" :titleActiveStyle="titleActiveStyle" :titleInactiveStyle="titleInactiveStyle">
+			<y-tab class=" y-tab-virtual" v-for="(item,index) in myTabs" :key="item.key" :title="item.title">
 				<view class="content-wrap">
 					<text style="color:ff9900;font-size: 15px;">点击右侧箭头展开所有的标签</text>
 					<view v-for="num in 60" :key="num">{{item.title}}</view>
@@ -14,7 +14,7 @@
 
 
 			<!-- 标签栏右侧 -->
-			<template #nav-right>
+			<template #navRight>
 				<view class="nav-right-wrap" @click.stop="showPopup">
 					<uni-icons type="bottom" :color="'#5e6d82'" size="16" />
 				</view>
@@ -30,13 +30,15 @@
 						<view class="popup__title-subtext">点击进入频道</view>
 						<view class="popup__title-tools">
 							<view class="popup__title-button" @click.stop="changeEdit">{{btnText}}</view>
-							<uni-icons class="close-popup-icon" type="top" color="#5e6d82" size="16" @click="closePopup" />
+							<uni-icons class="close-popup-icon" type="top" color="#5e6d82" size="16"
+								@click="closePopup" />
 						</view>
 					</view>
 					<uni-row class="popup__row-tags" :gutter="36">
 						<uni-col :span="6" v-for="(item,index) in myTabs" :key="item.key">
 							<view @click="handleClickByMy(item,index)">
-								<view class="popup-tag" :class="[item.disabled && 'is-disabled',  index===activeIndex && 'is-active']">
+								<view class="popup-tag"
+									:class="[item.disabled && 'is-disabled',  index===activeIndex && 'is-active']">
 									<text>{{item.title}}</text>
 								</view>
 								<!-- 删除图标：'进入编辑'模式且标签非禁用时显示 -->
@@ -70,6 +72,8 @@
 	export default {
 		data() {
 			return {
+				titleActiveStyle: { color: '#000', fontSize: '15px', },
+				titleInactiveStyle: { color: '#666', fontSize: '13px', },
 				show: false,
 				offsetTop: 0,
 				activeIndex: 0, //当前选中的标签下标
@@ -179,10 +183,12 @@
 			},
 			// 添加标签到"我的频道"
 			addTabToMy(tag, index) {
+				// 避免重复添加
+				const isFound = this.myTabs.find(o => o.key === tag.key);
+				if (isFound) return;
 				this.$set(tag, "isMy", true);
 				this.myTabs.push({ ...tag });
 				this.recommendTabs.splice(index, 1);
-
 			},
 		}
 	}

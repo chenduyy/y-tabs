@@ -68,7 +68,7 @@
 
 
 #### 普通案例
-+ <font color="#ff0000" size="2">注意：在QQ/百度/字节跳动/飞书/快手小程序中，自定义组件在渲染时会比App/H5端多一级节点，导致标签内容样式失效，需在组件上添加"`.y-tab-virtual`"的样式</font>
++ <font color="#ff0000" size="2">注意：在QQ/百度/字节跳动/飞书/快手/京东小程序中，自定义组件在渲染时会比App/H5端多一级节点，导致标签内容样式失效，需在组件上添加"`.y-tab-virtual`"的样式</font>
 
 ```
 <template>
@@ -100,7 +100,7 @@
 	}
 </script>
 <style scoped>
-/* #ifdef MP-QQ || MP-BAIDU || MP-TOUTIAO || MP-LARK || MP-KUAISHOU */
+/* #ifdef MP-QQ || MP-BAIDU || MP-TOUTIAO || MP-LARK || MP-KUAISHOU || MP-JD */
 .y-tab-virtual {
 	position: relative;
 	flex-shrink: 0;
@@ -144,7 +144,7 @@
 	}
 </script>
 <style scoped>
-/* #ifdef MP-QQ || MP-BAIDU || MP-TOUTIAO || MP-LARK || MP-KUAISHOU */
+/* #ifdef MP-QQ || MP-BAIDU || MP-TOUTIAO || MP-LARK || MP-KUAISHOU || MP-JD */
 .y-tab-virtual {
 	position: relative;
 	flex-shrink: 0;
@@ -380,8 +380,8 @@
 ## Tabs Slots
 <table>
 	<tr><th style="width:140px;">名称</th><th>说明</th></tr>
-	<tr><td>nav-left</td>  <td>标题左侧内容</td></tr>
-	<tr><td>nav-right</td>  <td>标题右侧内容</td></tr>
+	<tr><td>navLeft <font color="#1989fa" size="2">V3.0.4更改</font></td>  <td>标题左侧内容</td>在快手小程序端，具名插槽包含'-'则不会渲染插槽内容，因此将nav-left、nav-right改为navLeft、navRight</tr>
+	<tr><td>navRight <font color="#1989fa" size="2">V3.0.4更改</font></td>  <td>标题右侧内容</td></tr>
 	<tr><td>title+下标</td>  <td>标签标题，插槽名默认为"title"+tab下标，如果用户在y-tab上设置了titleSlotName，则插槽名为titleSlotName的值（注意：vue3中仅H5、app-vue有效，小程序端需在y-tab上设置titleSlot属性才会生效）</td></tr>
 	<tr><td>bar <font color="#1989fa" size="2">V2.0.1</font></td>  <td>滑块，可自定义滑块的内容(可以设置图片等)</td></tr>
 </table>
@@ -431,6 +431,14 @@ Tabs 组件在挂载时，会获取自身的宽度，并计算出底部条的位
 ```javascript
 this.$refs.tabs.resize();
 ```
+
+### 在3.0.3及之前的版本，标题栏吸顶通过js方案实现，后改为了css sticky方案，如果当前运行环境不支持该css属性，才降级使用js方案。
+由于css sticky的特殊性，我们不确定该属性是否受到css样式和布局的影响，可以通过closeCssSticky属性关闭css方案，使用js方案实现吸顶效果
+#### position:sticky 的生效规则
+ * 必须指定 top, right, bottom 或 left 四个阈值其中之一（且达到设定的阈值），才可使粘性定位生效。否则其行为与相对定位相同；并且 top 和 bottom 同时设置时，top 生效的优先级高，left 和 right 同时设置时，left 的优先级高
+ * 设定为 position: sticky 的元素的任意父节点的 overflow 属性必须是 visible，否则 position:sticky 不会生效；
+ * 在满足上述情况下，设定了 position: sticky 的元素的父容器的高度必须大于当前元素，否则也会失效。（当然，此时，sticky 吸附的基准元素就会变成父元素）
+
 
 ### 标签选中后，样式变化可能会导致底部条错误
 对于选中的标签，在放大字体的同时添加了过渡样式且有过渡时长，会使标签宽高发生变化，导致内部对于滑块的位置计算错误
