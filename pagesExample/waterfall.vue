@@ -14,7 +14,7 @@
 							<template v-slot:list1>
 								<!-- 为了磨平部分平台的BUG，必须套一层view -->
 								<view>
-									<view v-for="(item, index) in list1" :key="item.id" class="waterfall-item">
+									<view v-for="(item) in list1" :key="item.id" class="waterfall-item">
 										<view class="waterfall-item__image" :style="[imageStyle(item,1)]">
 											<image :src="item.image" mode="widthFix" :style="{width:item.width+'px'}">
 											</image>
@@ -34,7 +34,7 @@
 							<template v-slot:list2>
 								<!-- 为了磨平部分平台的BUG，必须套一层view -->
 								<view>
-									<view v-for="(item, index) in list2" :key="item.id" class="waterfall-item">
+									<view v-for="(item) in list2" :key="item.id" class="waterfall-item">
 										<view class="waterfall-item__image" :style="[imageStyle(item,2)]">
 											<image :src="item.image" mode="widthFix" :style="{width:item.width+'px'}">
 											</image>
