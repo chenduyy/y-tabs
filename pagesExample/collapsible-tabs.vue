@@ -4,7 +4,7 @@
 	<view class="page-container">
 		<y-tabs ref="tabs" v-model="activeIndex" type="text" title-active-color="#000" title-inactive-color="#666"
 			sticky :offsetTop="offsetTop" :titleActiveStyle="titleActiveStyle" :titleInactiveStyle="titleInactiveStyle">
-			<y-tab class=" y-tab-virtual" v-for="(item,index) in myTabs" :key="item.key" :title="item.title">
+			<y-tab class=" y-tab-virtual" v-for="(item) in myTabs" :key="item.key" :title="item.title">
 				<view class="content-wrap">
 					<text style="color:ff9900;font-size: 15px;">点击右侧箭头展开所有的标签</text>
 					<view v-for="num in 60" :key="num">{{item.title}}</view>
